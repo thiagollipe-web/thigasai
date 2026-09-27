@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- CORREÇÃO MOBILE 1: Bloqueio de zoom acidental e escala máxima -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THIGAS A.I - Terminal Engine</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+        
+        /* CORREÇÃO MOBILE 2: Utilização de 'dvh' (Dynamic Viewport Height) para lidar com teclados e barras de navegação */
+        body { background: #0b0b0c; color: #e3e3e3; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+        
+        /* Layout Superior Premium */
+        header { 
+            background: #131314; 
+            border-bottom: 1px solid #2e3032; 
+            padding: 12px 24px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .title { 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            background: linear-gradient(45deg, #4285f4, #9b51e0, #24b47e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .title-glow { text-shadow: 0 0 15px rgba(155, 81, 224, 0.4); }
+        .controls { display: flex; gap: 12px; align-items: center; }
+        select { 
+            background: #1e1f20; color: #c4c7c5; border: 1px solid #444746; 
+            padding: 6px 12px; border-radius: 8px; cursor: pointer; outline: none; font-size: 0.9rem;
+        }
+        
+        /* Layout Principal */
+        main { flex: 1; display: flex; height: calc(100dvh - 55px); background: #0b0b0c; }
+        .panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #2e3032; position: relative; }
+        .preview-panel { flex: 1; background: #0f0f11; display: flex; flex-direction: column; }
+        
+        /* Terminal Log & Chat */
+        .terminal-log { 
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: #0b0b0c;
+        }
+        .line { line-height: 1.5; white-space: pre-wrap; font-size: 0.95rem; }
+        
+        .ascii-art { 
+            white-space: pre; background: linear-gradient(90deg, #ff4e50, #f9d423, #00ff00, #00ffff, #4285f4, #9b51e0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; font-weight: bold; margin-bottom: 15px;
+        }
+        .system { color: #8ab4f8; } .user { color: #fdd663; } .bot { color: #81c995; }
+        
+        /* Entrada de Comandos */
+        .input-area { 
+            background: #1e1f20; border: 1px solid #444746; margin: 15px; padding: 12px 16px; 
+            border-radius: 24px; display: flex; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .prompt-symbol { color: #4285f4; font-weight: bold; align-self: center; }
+        input { flex: 1; background: transparent; border: none; color: #e3e3e3; font-size: 1rem; outline: none; }
+        
+        /* Canvas Expandido */
+        .canvas-container { flex: 1; background: #050506; position: relative; }
+        canvas { width: 100%; height: 100%; display: block; touch-action: none; /* Previne scroll no canvas */ }
+        
+        /* Controles Mobile */
+        .mobile-pad { 
+            display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px; 
+            background: #131314; border-top: 1px solid #2e3032; 
+        }
+        
+        /* CORREÇÃO MOBILE 3: Impedir a seleção de texto ao tocar rapidamente nos botões */
+        .btn-pad { 
+            background: #1e1f20; border: 1px solid #444746; color: #c4c7c5; padding: 12px; 
+            text-align: center; font-weight: bold; border-radius: 8px; font-size: 0.9rem;
+            user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+        }
+        .btn-pad:active { background: #4285f4; color: #fff; border-color: #8ab4f8; }
+
+        /* Media Query para Telemóveis */
+        @media (max-width: 768px) {
+            main { flex-direction: column; }
+            .panel { border-right: none; border-bottom: 1px solid #2e3032; height: 50dvh; } /* Divide o ecrã a meio no telemóvel */
+            .preview-panel { height: 50dvh; }
+            .mobile-pad { display: grid; }
+        }
+    </style>
+    <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.19';
+        window.pipeline = pipeline;
+        // Permite a execução no navegador sem procurar ficheiros locais do Node.js
+        env.allowLocalModels = false;
+    </script>
+</head>
+<body>
+
+<header>
+    <div class="title title-glow">✦ THIGAS A.I // BROWSER ENGINE v3.7 ✦</div>
+    <div class="controls">
+        <label for="model-select" style="font-size: 0.8rem; color: #9aa0a6;">MODELO:</label>
+        <select id="model-select" onchange="switchModel(this.value)">
+            <option value="HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2 Micro (Mais Leve)</option>
+            <option value="HuggingFaceTB/SmolLM2-360M-Instruct">THIGAS A.I (360M)</option>
+        </select>
+    </div>
+</header>
+
+<main>
+    <div class="panel">
+        <div class="terminal-log" id="terminal-screen">
+            <div class="ascii-art" id="ascii-banner">
+ ████████╗██╗  ██╗██╗ ██████╗  █████╗  ███████╗     █████╗ ██╗
+ ╚══██╔══╝██║  ██║██║██╔════╝ ██╔══██╗ ██╔════╝    ██╔══██╗██║
+    ██║   ███████║██║██║  ███╗███████║ ███████╗    ███████║██║
+    ██║   ██╔══██║██║██║   ██║██╔══██║ ╚════██║    ██╔══██║██║
+    ██║   ██║  ██║██║╚██████╔╝██║  ██║ ███████║    ██║  ██║██║
+    ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚══════╝    ╚═╝  ╚═╝╚═╝</div>
+            <div class="line system">[SISTEMA] Motor Mobile Otimizado ativado.</div>
+            <div class="line system" id="progress-line">[SISTEMA] Sincronizando núcleos...</div>
+        </div>
+        <div class="input-area">
+            <span class="prompt-symbol">✦</span>
+            <input type="text" id="cmd-input" placeholder="Aguardando LLM..." disabled>
+        </div>
+        <!-- CORREÇÃO MOBILE 4: Substituição de 'onclick' por 'onpointerdown' para resposta imediata sem atraso de 300ms -->
+        <div class="mobile-pad">
+            <div class="btn-pad" onpointerdown="sendMobileKey('Ação')">AÇÃO</div>
+            <div class="btn-pad" onpointerdown="sendMobileKey('Cima')">▲</div>
+            <div class="btn-pad" onpointerdown="sendMobileKey('Menu')">MENU</div>
+            <div class="btn-pad" onpointerdown="sendMobileKey('Esquerda')">◀</div>
+            <div class="btn-pad" onpointerdown="sendMobileKey('Baixo')">▼</div>
+            <div class="btn-pad" onpointerdown="sendMobileKey('Direita')">▶</div>
+        </div>
+    </div>
+
+    <div class="preview-panel">
+        <div class="canvas-container">
+            <canvas id="retro-canvas"></canvas>
+        </div>
+    </div>
+</main>
+
+<script>
+    const screen = document.getElementById('terminal-screen');
+    const input = document.getElementById('cmd-input');
+    const modelSelect = document.getElementById('model-select');
+    const progressLine = document.getElementById('progress-line');
+    
+    const canvas = document.getElementById('retro-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Função para manter o canvas perfeitamente ajustado ao redimensionamento do telemóvel
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        ctx.fillStyle = '#0f0f11'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#4285f4'; 
+        ctx.font = '12px monospace';
+        ctx.fillText("[CANVAS PRONTO PARA RENDERIZAÇÃO]", 10, 20);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    const SYSTEM_PROMPT = "Você é o THIGAS A.I, um especialista em programação. Responda apenas com código limpo e explicações diretas.";
+    let generator = null;
+
+    function processarANSI(texto) {
+        let textoSeguro = texto.replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag]));
+        const coresANSI = { '31': 'color: #ff4e50;', '32': 'color: #00ff00;', '33': 'color: #f9d423;', '34': 'color: #4285f4;' };
+        return textoSeguro.replace(/\x1b\[(\d+)m/g, (match, n) => n === '0' ? '</span>' : (coresANSI[n] ? `<span style="${coresANSI[n]}">` : match));
+    }
+
+    async function switchModel(modelPath) {
+        input.disabled = true;
+        input.placeholder = "Baixando IA (Pode demorar no telemóvel)...";
+        printLine(`[SISTEMA] Iniciando download: ${modelPath}`, "system");
+        
+        try {
+            // CORREÇÃO MOBILE 5: device 'auto' permite que o script escolha o método mais seguro para o telemóvel atual.
+            generator = await window.pipeline('text-generation', modelPath, {
+                quantized: true,
+                dtype: 'q4', 
+                device: 'auto', 
+                progress_callback: (data) => {
+                    if (data.status === 'progress') {
+                        progressLine.innerText = `[DOWNLOAD] ${Math.round(data.progress)}% concluído.`;
+                    }
+                }
+            });
+
+            progressLine.innerText = `[SISTEMA] IA Carregada na Memória.`;
+            input.disabled = false;
+            input.placeholder = "Digite um comando...";
+            printLine(`THIGAS A.I > Online e pronto para programar.`, "bot");
+        } catch (error) {
+            printLine("\x1b[31m[ERRO] O navegador móvel bloqueou a alocação de memória. Tente recarregar a página.\x1b[0m", "system");
+            console.error(error);
+        }
+    }
+
+    window.addEventListener('load', () => {
+        // Inicializa automaticamente com o modelo mais leve (135M) para evitar colapsos em telemóveis mais antigos.
+        setTimeout(() => { switchModel(modelSelect.value); }, 500);
+    });
+
+    async function processCommand() {
+        const text = input.value.trim();
+        if (!text || !generator) return;
+
+        printLine(`user@root:~# ${text}`, 'user');
+        input.value = '';
+
+        if (text.toLowerCase() === 'clear') { 
+            screen.innerHTML = ''; 
+            screen.appendChild(document.getElementById('ascii-banner'));
+            return; 
+        }
+
+        printLine("\x1b[33m[SISTEMA] Processando...\x1b[0m", 'system');
+
+        const promptFormatado = `<|im_start|>system\n${SYSTEM_PROMPT}<|im_end|>\n<|im_start|>user\n${text}<|im_end|>\n<|im_start|>assistant\n`;
+
+        try {
+            const response = await generator(promptFormatado, { max_new_tokens: 150, temperature: 0.3 });
+            let botReply = response.generated_text.split('<|im_start|>assistant\n')[1] || response.generated_text;
+            printLine(`THIGAS A.I > ${botReply.replace('<|im_end|>', '').trim()}`, 'bot');
+        } catch (error) {
+            printLine("\x1b[31m[ERRO] Falha na geração. Faltou RAM livre.\x1b[0m", 'system');
+        }
+    }
+
+    function printLine(text, type) {
+        const line = document.createElement('div');
+        line.classList.add('line', type);
+        line.innerHTML = processarANSI(text);
+        screen.appendChild(line);
+        screen.scrollTop = screen.scrollHeight;
+    }
+
+    function sendMobileKey(key) {
+        printLine(`[PAD] Comando: ${key}`, 'system');
+    }
+    
+    input.addEventListener('keypress', (e) => { if(e.key === 'Enter') processCommand(); });
+</script>
+</body>
+</html>
