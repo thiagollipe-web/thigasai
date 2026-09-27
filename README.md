@@ -1,38 +1,45 @@
-# ✦ THIGAS A.I // BROWSER ENGINE v3.7 ✦
+# ✦ THIGAS AI // TERMINAL ENGINE v2.0 ✦
 
-Um motor de terminal interativo executado inteiramente no navegador web. Este projeto funde uma interface de linha de comandos (CLI) de inspiração retro com capacidades de Inteligência Artificial local e um ecrã de renderização gráfica (*Canvas*), perfeitamente otimizado para dispositivos móveis.
+Uma interface web retro responsiva no estilo terminal hacker integrada com Inteligência Artificial local via **Ollama**. Projetada para desenvolvimento de código, execução de scripts, e simulação em sandbox em tempo real, com total compatibilidade para dispositivos móveis (Android) e desktop (Windows/Chromebook).
 
-## 🚀 Visão Geral
+## 🚀 Funcionalidades
 
-O THIGAS A.I Terminal Engine foi concebido para ser uma ferramenta leve, responsiva e poderosa para a experimentação de algoritmos, desenvolvimento de mecânicas de jogos digitais e interação com modelos de linguagem de grande escala (LLMs) sem necessidade de ligação a servidores externos para o processamento de texto. 
+- 🤖 **Interface estilo Terminal:** Design hacker estilizado em blocos ASCII/ANSI nas cores verde, ciano e roxo.
+- 🎛️ **Seletor Dinâmico de LLMs:** Alterne entre modelos locais (`thigas-ai`, `gemma2:2b`, `qwen2.5-coder:1.5b`) direto pela barra superior.
+- 🧠 **Memória Pré-Programada:** Sistema injetado com instruções estritas para o **THIGAS AI** agir como um Engenheiro de Software e Especialista em Jogos.
+- 📦 **Sandbox Integrado:** Renderização e teste automático em tempo real de blocos de código gerados no chat em uma janela iframe.
+- 🕹️ **Controles Mobile (D-Pad):** Layout com botões virtuais otimizado para o uso através da tela de smartphones.
 
-A interface divide-se de forma dinâmica: apresenta o terminal de comandos e, simultaneamente, um ambiente gráfico limpo (`<canvas>`), preparando o terreno para a programação visual e desenvolvimento de lógicas de jogo.
+## 🛠️ Como Configurar o Backend Local
 
-## ✨ Funcionalidades
+Como a aplicação web roda do lado do cliente (navegador), ela precisa se conectar com a sua instância do Ollama rodando em segundo plano. Siga as instruções para liberar o acesso:
 
-*   **Processamento de IA Local:** Integração com a biblioteca Hugging Face `Transformers.js`, permitindo descarregar e correr modelos (como o SmolLM2) diretamente na RAM/VRAM do dispositivo através de WebAssembly e WebGPU.
-*   **Otimização Mobile-First:** 
-    *   Design responsivo utilizando `100dvh` para evitar conflitos com teclados virtuais e barras de navegação em telemóveis.
-    *   Controlos D-Pad integrados na interface com eventos `onpointerdown` para eliminar o atraso tátil de 300ms, ideal para controlo de jogos digitais.
-    *   Bloqueio inteligente de ampliação (zoom) acidental no ecrã.
-*   **Renderização de Terminal Autêntica:**
-    *   Preservação estrutural de arte ASCII.
-    *   Motor personalizado de interpretação (Parsing) de códigos de escape ANSI, convertendo cores de terminal reais em estilos HTML dinâmicos.
-*   **Ecrã Gráfico Integrado:** Um elemento HTML5 Canvas maximizado, pronto para receber renderizações gráficas 2D e rotinas de jogos.
+### 1. Permitir conexões externas (CORS)
+Por padrão, o Ollama bloqueia requisições vindas de fora. Ative as origens globais antes de inicializar o servidor.
 
-## 🛠️ Tecnologias Utilizadas
+* **No Linux (Chromebook):**
+```bash
+export OLLAMA_ORIGINS="*"
+ollama serve
+```
 
-*   **HTML5 & CSS3:** Estrutura da interface, tipografia monospace, variáveis de cor dinâmicas e layouts flexíveis (`Flexbox` e `Grid`).
-*   **JavaScript (ES6+):** Lógica assíncrona (`async/await`), manipulação do DOM e interceptação de eventos de ponteiro.
-*   **Transformers.js:** Pipeline de processamento de inferência de LLMs em ambiente cliente.
-*   **HTML5 Canvas API:** Superfície de desenho preparada para a prototipagem gráfica.
+* **No Windows (PowerShell):**
+```powershell
+$env:OLLAMA_ORIGINS="*"
+ollama serve
+```
 
-## 📦 Como Instalar e Executar
+### 2. Sincronizar o IP para uso no Celular
+Se você for abrir o link do GitHub Pages pelo celular Android, garanta que o smartphone e o computador estejam conectados na **mesma rede Wi-Fi**:
+1. Descubra o IP local do seu computador rodando `hostname -I` no terminal Linux ou `ipconfig` no Windows.
+2. No código do seu arquivo `index.html`, altere a linha de requisição de `127.0.0.1` para o IP do seu computador (exemplo: `http://192.168.1`).
 
-Sendo uma *Single Page Application* (SPA) baseada em tecnologias cliente, a implementação é direta:
+## 📁 Estrutura de Arquivos Usada
 
-1. **Clone o repositório** ou faça o download dos ficheiros.
-2. Devido às políticas de segurança dos navegadores modernos (CORS) e aos requisitos da biblioteca `Transformers.js`, não é recomendado abrir o ficheiro clicando diretamente nele (`file://`).
-3. **Inicie um servidor local.** Se utilizar o Visual Studio Code, a extensão *Live Server* é a opção mais rápida. Alternativamente, utilize o Python através da linha de comandos na pasta do projeto:
-   ```bash
-   python -m http.server 8000
+- `index.html` — Arquivo principal consolidado contendo toda a estrutura HTML, estilização CSS e lógica JavaScript (anteriormente `dev_anabel.html`).
+- `Modelfile` — Arquivo de configuração local usado no Ollama para compilar os pesos do arquivo `.gguf` e injetar a personalidade secreta do **THIGAS AI**.
+- `iniciar_ia.sh` — Script utilitário em Bash com painel personalizado inspirado no Google Gemini para inicialização rápida no terminal do Chromebook.
+
+## 📄 Licença
+
+Este projeto é de uso pessoal e de código aberto para a comunidade de desenvolvedores independentes.
