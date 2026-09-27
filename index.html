@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Ajuste no viewport para bloquear zoom acidental em dispositivos táteis, mantendo a responsividade -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THIGAS A.I - Terminal Engine</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
@@ -99,7 +100,7 @@
         
         /* Canvas (Agora a expandir para todo o ecrã direito) */
         .canvas-container { 
-            flex: 1; /* Permite que o contentor ocupe o espaço vazio deixado pelo Sandbox */
+            flex: 1; 
             background: #050506; 
             position: relative; 
         }
@@ -129,7 +130,10 @@
         }
     </style>
     <script type="module">
-        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.19';
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.19';
+        
+        // Bloqueia a procura em diretorias locais e assegura o carregamento via internet
+        env.allowLocalModels = false;
         window.pipeline = pipeline;
     </script>
 </head>
@@ -140,9 +144,10 @@
     <div class="controls">
         <label for="model-select" style="font-size: 0.8rem; color: #9aa0a6;">MODELO:</label>
         <select id="model-select" onchange="switchModel(this.value)">
+            <!-- Recomendo deixar o modelo de 135M por defeito durante os testes -->
+            <option value="HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2 Micro (135M)</option>
             <option value="HuggingFaceTB/SmolLM2-360M-Instruct">THIGAS A.I (SmolLM2 360M)</option>
             <option value="Qwen/Qwen2.5-Coder-0.5B-Instruct">Qwen 2.5 Coder (0.5B)</option>
-            <option value="HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2 Micro (135M)</option>
         </select>
     </div>
 </header>
@@ -162,7 +167,7 @@
         </div>
         <div class="input-area">
             <span class="prompt-symbol">✦</span>
-            <input type="text" id="cmd-input" placeholder="Aguardando carregamento da LLM..." disabled>
+            <input type="text" id="cmd-input" placeholder="Aguardando carregamento da LLM..." disabled autocomplete="off">
         </div>
         <div class="mobile-pad">
             <div class="btn-pad" onclick="sendMobileKey('Ação')">AÇÃO</div>
@@ -174,7 +179,7 @@
         </div>
     </div>
 
-    <!-- O Painel agora contém unicamente o ecrã de pintura (Canvas) -->
+    <!-- O Painel contém unicamente o ecrã de pintura (Canvas) -->
     <div class="preview-panel">
         <div class="canvas-container">
             <canvas id="retro-canvas"></canvas>
@@ -205,7 +210,7 @@
     window.addEventListener('resize', resizeCanvas);
     setTimeout(resizeCanvas, 100);
 
-    const SYSTEM_PROMPT = "Você é o THIGAS A.I, um assistente de elite especialista em tecnologia e programação de jogos (HTML, CSS, JavaScript, Canvas, C# e C++). Suas respostas devem ser curtas, diretas, sem introduções e focadas apenas em códigos funcionais limpos.";
+    const SYSTEM_PROMPT = "Você é o THIGAS A.I, um assistente de elite especialista em tecnologia e programação de jogos. Suas respostas devem ser curtas e focadas em códigos funcionais limpos.";
     let generator = null;
 
     function processarANSI(texto) {
@@ -228,24 +233,29 @@
 
     async function switchModel(modelPath) {
         input.disabled = true;
-        input.placeholder = "Alternando modelo... Baixando blocos para o celular.";
-        printLine(`[SISTEMA] Conectando ao repositório: ${modelPath}`, "system");
+        input.placeholder = "A alternar modelo... A transferir blocos para a memória.";
+        printLine(`[SISTEMA] A ligar ao repositório: ${modelPath}`, "system");
         
         try {
+            // Configuração para utilizar WebAssembly comprimido (ideal para telemóveis)
             generator = await window.pipeline('text-generation', modelPath, {
+                quantized: true,
+                dtype: 'q4',
+                device: 'wasm', 
                 progress_callback: (data) => {
                     if (data.status === 'progress') {
-                        progressLine.innerText = `[DOWNLOAD] ${Math.round(data.progress)}% extraído para o cache do navegador.`;
+                        progressLine.innerText = `[DOWNLOAD] ${Math.round(data.progress)}% extraído para a cache do navegador.`;
                     }
                 }
             });
 
-            progressLine.innerText = `[SISTEMA] Concluído. Modelo ativo alocado na RAM do smartphone.`;
+            progressLine.innerText = `[SISTEMA] Concluído. Modelo ativo alocado na RAM do dispositivo.`;
             input.disabled = false;
             input.placeholder = "Faça uma pergunta para o THIGAS A.I...";
             printLine(`THIGAS A.I > Conectado diretamente e pronto com a memória do sistema ativa!`, "bot");
         } catch (error) {
             printLine("\x1b[31m[ERRO] Falha ao alocar memória RAM ou carregar modelo via WebAssembly.\x1b[0m", "system");
+            printLine(`\x1b[31m[DETALHE DO SISTEMA] ${error.message}\x1b[0m`, "system");
             console.error(error);
         }
     }
@@ -267,7 +277,7 @@
             return; 
         }
 
-        printLine("\x1b[33m[SISTEMA] Computando tokens via placa de vídeo local...\x1b[0m", 'system');
+        printLine("\x1b[33m[SISTEMA] A computar tokens via processador local...\x1b[0m", 'system');
 
         const promptFormatado = `<|im_start|>system\n${SYSTEM_PROMPT}<|im_end|>\n<|im_start|>user\n${text}<|im_end|>\n<|im_start|>assistant\n`;
 
@@ -284,10 +294,11 @@
 
             printLine(`THIGAS A.I > ${botReply}`, 'bot');
 
-            // Nota: O código de injeção no iframe foi totalmente removido desta área.
-
         } catch (error) {
-            printLine("\x1b[31m[ERRO] Erro na geração dos tokens do modelo local.\x1b[0m", 'system');
+            // MODO DETETIVE: Apresenta a mensagem exata do erro devolvido pelo teu equipamento
+            printLine("\x1b[31m[ERRO] A geração de tokens falhou.\x1b[0m", 'system');
+            printLine(`\x1b[31m[MOTIVO TÉCNICO] ${error.message}\x1b[0m`, 'system');
+            console.error("Stack trace completo do erro:", error);
         }
     }
 
@@ -301,8 +312,6 @@
 
     function sendMobileKey(key) {
         printLine(`[D-PAD] Tecla acionada: ${key}`, 'system');
-        // Uma vez que o Sandbox foi desativado, preparemos os controlos
-        // para comunicarem internamente com o próprio Canvas no futuro.
         console.log("Variável de jogo acionada pelo D-PAD:", key);
     }
     
