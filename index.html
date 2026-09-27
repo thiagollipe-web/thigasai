@@ -7,127 +7,95 @@
 <title>THIGAS AI // Terminal</title>
 <style>
 :root{--bg:#0b0d10;--panel:#11151a;--panel2:#171c22;--line:#2a3139;--text:#e7edf3;--muted:#87919c;--accent:#8ab4f8;--green:#81c995;--yellow:#fdd663;--red:#ff6b6b}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-.app{height:100dvh;display:grid;grid-template-columns:1fr 320px;grid-template-rows:56px 1fr;overflow:hidden}
-header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);background:rgba(11,13,16,.96);z-index:4}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #81c995}.top-actions{display:flex;gap:8px;align-items:center}
-.icon-btn,.model-select{height:36px;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:0 11px}
-.icon-btn{min-width:36px;padding:0}
-.chat{min-width:0;display:flex;flex-direction:column;background:var(--bg);position:relative}
-.messages{flex:1;overflow:auto;padding:22px 18px 120px}
-.message{max-width:860px;margin:0 auto 18px;display:flex;gap:12px}.avatar{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;background:var(--panel2);color:var(--accent);font-size:12px;font-weight:700}
-.bubble{min-width:0;line-height:1.55}.role{font-size:12px;color:var(--muted);margin-bottom:5px}.content{white-space:pre-wrap;overflow-wrap:anywhere}
-.message.user .avatar{color:var(--yellow)}.message.user .content{background:var(--panel2);padding:10px 12px;border-radius:12px}
-.composer{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 22%)}.compose-box{max-width:860px;margin:auto;display:flex;gap:8px;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
-#prompt{flex:1;resize:none;border:0;outline:0;background:transparent;color:var(--text);min-height:24px;max-height:130px}
-.send{width:42px;height:42px;border:0;border-radius:12px;background:var(--accent);color:#081018;font-weight:700}
-.sidebar{border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-width:0}
-.side-section{padding:14px;border-bottom:1px solid var(--line)}.side-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px}
-.status{display:grid;gap:7px;font-size:13px}.row{display:flex;justify-content:space-between;gap:10px}.value{color:var(--text);text-align:right}.ok{color:var(--green)}.warn{color:var(--yellow)}.err{color:var(--red)}
-.memory-list{max-height:220px;overflow:auto;display:grid;gap:7px}.memory-item{padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#0d1115;font-size:12px;color:#bac3cc}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.action{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px;border-radius:9px;font-size:12px}
-.canvas-wrap{display:none;position:relative}.canvas-wrap canvas{width:100%;height:100%;display:block}.canvas-label{position:absolute;top:9px;left:9px;font:11px monospace;color:#7e8994}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}
+.app{height:100dvh;display:grid;grid-template-columns:1fr 330px;grid-template-rows:56px 1fr;overflow:hidden}
+header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);background:rgba(11,13,16,.97);z-index:4}.brand{display:flex;align-items:center;gap:10px;font-weight:700}.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #81c995}.top-actions{display:flex;gap:8px;align-items:center}
+.engine-select,.icon-btn,.field input,.field select{height:36px;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:0 11px}.icon-btn{min-width:36px;padding:0}
+.chat{min-width:0;display:flex;flex-direction:column;background:var(--bg);position:relative}.messages{flex:1;overflow:auto;padding:22px 18px 120px}.message{max-width:860px;margin:0 auto 18px;display:flex;gap:12px}.avatar{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;background:var(--panel2);color:var(--accent);font-size:12px;font-weight:700}.bubble{min-width:0;line-height:1.55}.role{font-size:12px;color:var(--muted);margin-bottom:5px}.content{white-space:pre-wrap;overflow-wrap:anywhere}.message.user .avatar{color:var(--yellow)}.message.user .content{background:var(--panel2);padding:10px 12px;border-radius:12px}
+.composer{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 22%)}.compose-box{max-width:860px;margin:auto;display:flex;gap:8px;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}#prompt{flex:1;resize:none;border:0;outline:0;background:transparent;color:var(--text);min-height:24px;max-height:130px}.send{width:42px;height:42px;border:0;border-radius:12px;background:var(--accent);color:#081018;font-weight:700}
+.sidebar{border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-width:0;overflow:auto}.side-section{padding:14px;border-bottom:1px solid var(--line)}.side-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px}.status{display:grid;gap:7px;font-size:13px}.row{display:flex;justify-content:space-between;gap:10px}.value{color:var(--text);text-align:right}.ok{color:var(--green)}.warn{color:var(--yellow)}.err{color:var(--red)}
+.engine-list{display:grid;gap:6px}.engine-card{padding:9px;border:1px solid var(--line);border-radius:9px;background:#0d1115;cursor:pointer}.engine-card.active{border-color:var(--accent)}.engine-name{font-size:13px}.engine-type{font-size:11px;color:var(--muted);margin-top:3px}
+.fields{display:grid;gap:8px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.field input,.field select{width:100%;height:34px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.action{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px;border-radius:9px;font-size:12px}
+.memory-list{max-height:180px;overflow:auto;display:grid;gap:7px}.memory-item{padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#0d1115;font-size:12px;color:#bac3cc}
 .home{max-width:860px;margin:12vh auto 0;padding:0 4px}.home h1{font-size:30px;margin:0 0 8px}.home p{color:var(--muted);margin:0}.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.quick button{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 11px;border-radius:12px}
-@media(max-width:800px){.app{grid-template-columns:1fr;grid-template-rows:56px 1fr}.sidebar{display:none}.messages{padding:18px 12px 110px}.home{margin-top:10vh}.message{gap:9px}.composer{padding-left:10px;padding-right:10px}}
+@media(max-width:800px){.app{grid-template-columns:1fr;grid-template-rows:56px 1fr}.sidebar{display:none}.messages{padding:18px 12px 110px}.home{margin-top:10vh}.message{gap:9px}.composer{padding-left:10px;padding-right:10px}.engine-select{max-width:180px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-  <div class="brand"><span class="dot"></span><span>THIGAS AI</span><span style="color:var(--muted);font-weight:500">/ terminal</span></div>
-  <div class="top-actions">
-    <select id="model" class="model-select" aria-label="Modelo GGUF">
-      <option value="auto">Motor GGUF • automático</option>
-      <option value="local">GGUF local • llama.cpp</option>
-      <option value="ollama">Ollama • local</option>
-      <option value="remote">Endpoint compatível • remoto</option>
-    </select>
-    <button id="memoryBtn" class="icon-btn" title="Memória">M</button>
-    <button id="clearBtn" class="icon-btn" title="Limpar conversa">×</button>
-  </div>
-</header>
-<section class="chat">
-  <div id="messages" class="messages">
-    <div id="home" class="home">
-      <h1>Como posso ajudar?</h1>
-      <p>Terminal THIGAS AI com roteamento de modelos, memória persistente e fallback.</p>
-      <div class="quick">
-        <button data-q="Explique o funcionamento deste projeto.">Analisar projeto</button>
-        <button data-q="Crie um jogo simples em HTML, CSS e JavaScript.">Criar código</button>
-        <button data-q="Ajude a corrigir um erro de JavaScript.">Corrigir código</button>
-      </div>
-    </div>
-  </div>
-  <div class="composer">
-    <div class="compose-box">
-      <textarea id="prompt" rows="1" placeholder="Digite uma mensagem..." aria-label="Mensagem"></textarea>
-      <button id="send" class="send" aria-label="Enviar">↑</button>
-    </div>
-  </div>
-</section>
-<aside class="sidebar">
-  <div class="side-section">
-    <div class="side-title">Motor</div>
-    <div class="status">
-      <div class="row"><span>Rota</span><span id="route" class="value">auto</span></div>
-      <div class="row"><span>Backend</span><span id="backend" class="value warn">aguardando</span></div>
-      <div class="row"><span>Memória</span><span id="memCount" class="value">0 fatos</span></div>
-    </div>
-  </div>
-  <div class="side-section">
-    <div class="side-title">Memória</div>
-    <div id="memoryList" class="memory-list"><div class="memory-item">Nenhuma memória salva.</div></div>
-  </div>
-  <div class="side-section">
-    <div class="side-title">Controles</div>
-    <div class="actions">
-      <button class="action" id="saveMem">Salvar contexto</button>
-      <button class="action" id="forgetMem">Esquecer tudo</button>
-      <button class="action" id="exportMem">Exportar</button>
-      <button class="action" id="importMem">Importar</button>
-    </div>
-    <input id="fileInput" type="file" accept="application/json" hidden>
-  </div>
-</aside>
+<div class="brand"><span class="dot"></span><span>THIGAS AI</span><span style="color:var(--muted);font-weight:500">/ terminal</span></div>
+<div class="top-actions">
+<select id="engine" class="engine-select" aria-label="Motor de IA">
+<option value="auto">AUTO • melhor disponível</option>
+<option value="llamacpp">LLAMA.CPP • GGUF</option>
+<option value="ollama">OLLAMA • local</option>
+<option value="lmstudio">LM STUDIO • local</option>
+<option value="localai">LOCALAI • local</option>
+<option value="koboldcpp">KOBOLDCPP • GGUF</option>
+<option value="jan">JAN • local</option>
+<option value="openai">OPENAI • compatível</option>
+<option value="openrouter">OPENROUTER • online</option>
+<option value="custom">CUSTOM • endpoint</option>
+</select>
+<button id="memoryBtn" class="icon-btn" title="Memória">M</button><button id="clearBtn" class="icon-btn" title="Limpar">×</button>
 </div>
+</header>
+<section class="chat"><div id="messages" class="messages"><div id="home" class="home"><h1>Como posso ajudar?</h1><p>Terminal THIGAS AI com múltiplos motores, seleção de modelos e memória persistente.</p><div class="quick"><button data-q="Explique o funcionamento deste projeto.">Analisar projeto</button><button data-q="Crie um jogo simples em HTML, CSS e JavaScript.">Criar código</button><button data-q="Ajude a corrigir um erro de JavaScript.">Corrigir código</button></div></div></div>
+<div class="composer"><div class="compose-box"><textarea id="prompt" rows="1" placeholder="Digite uma mensagem..." aria-label="Mensagem"></textarea><button id="send" class="send">↑</button></div></div></section>
+<aside class="sidebar">
+<div class="side-section"><div class="side-title">Motor ativo</div><div class="status"><div class="row"><span>Motor</span><span id="route" class="value">auto</span></div><div class="row"><span>Status</span><span id="backend" class="value warn">aguardando</span></div><div class="row"><span>Modelo</span><span id="modelStatus" class="value">padrão</span></div><div class="row"><span>Memória</span><span id="memCount" class="value">0 fatos</span></div></div></div>
+<div class="side-section"><div class="side-title">Motores disponíveis</div><div id="engineList" class="engine-list"></div></div>
+<div class="side-section"><div class="side-title">Configuração</div><div class="fields">
+<div class="field"><label for="endpoint">Endpoint</label><input id="endpoint" placeholder="http://127.0.0.1:8080/v1"></div>
+<div class="field"><label for="modelName">Modelo</label><input id="modelName" placeholder="qwen2.5-coder:1.5b / modelo GGUF"></div>
+<button class="action" id="saveConfig">Salvar configuração</button></div></div>
+<div class="side-section"><div class="side-title">Memória</div><div id="memoryList" class="memory-list"><div class="memory-item">Nenhuma memória salva.</div></div></div>
+<div class="side-section"><div class="side-title">Controles</div><div class="actions"><button class="action" id="saveMem">Salvar contexto</button><button class="action" id="forgetMem">Esquecer tudo</button><button class="action" id="exportMem">Exportar</button><button class="action" id="importMem">Importar</button></div><input id="fileInput" type="file" accept="application/json" hidden></div>
+</aside></div>
 <script>
-const $=s=>document.querySelector(s);
-const messages=$("#messages"), prompt=$("#prompt"), model=$("#model");
-const STORE="thigasai.memory.v1", CHAT="thigasai.chat.v1";
-const state={memory:JSON.parse(localStorage.getItem(STORE)||"[]"),history:JSON.parse(localStorage.getItem(CHAT)||"[]"),backend:null};
-
-function save(){localStorage.setItem(STORE,JSON.stringify(state.memory.slice(-100)));localStorage.setItem(CHAT,JSON.stringify(state.history.slice(-80)));renderMemory()}
-function renderMemory(){const box=$("#memoryList");$("#memCount").textContent=state.memory.length+" fatos";box.innerHTML=state.memory.length?state.memory.slice().reverse().map((m,i)=>'<div class="memory-item">'+escapeHtml(m.text)+'</div>').join(""):'<div class="memory-item">Nenhuma memória salva.</div>'}
-function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function addMessage(role,text,saveChat=true){$("#home")?.remove();const el=document.createElement("div");el.className="message "+role;el.innerHTML='<div class="avatar">'+(role==="user"?"U":"T")+'</div><div class="bubble"><div class="role">'+(role==="user"?"Você":"THIGAS AI")+'</div><div class="content">'+escapeHtml(text)+'</div></div>';messages.appendChild(el);messages.scrollTop=messages.scrollHeight;if(saveChat){state.history.push({role,content:text});save()}}
-function restore(){if(state.history.length){$("#home")?.remove();state.history.forEach(x=>addMessage(x.role,x.content,false))}renderMemory()}
-
-function rememberFromText(text){const patterns=[/\bmeu nome é\s+(.+)/i,/\beu sou\s+(.+)/i,/\bmoro em\s+(.+)/i,/\bmeu projeto é\s+(.+)/i,/\bprefer(?:o|ência)\s+(.+)/i];for(const p of patterns){const m=text.match(p);if(m){const fact=m[0].trim();if(!state.memory.some(x=>x.text.toLowerCase()===fact.toLowerCase()))state.memory.push({text:fact,at:Date.now()});}}}
-function memoryContext(){return state.memory.slice(-20).map(x=>x.text).join("\n")}
-
-function chooseRoute(){const v=model.value;if(v!=="auto")return v;if(window.location.protocol==="http:"||window.location.protocol==="https:"){return "local";}return "local"}
-
-async function callLlamaCpp(text){const base=localStorage.getItem("thigas.endpoint")||"http://127.0.0.1:8080/v1";const body={messages:[{role:"system",content:"Você é THIGAS AI. Responda em português do Brasil. Seja preciso, mantenha contexto e ajude com programação."+(memoryContext()?" Memória relevante:\n"+memoryContext():"")},{role:"user",content:text}],temperature:.3,max_tokens:400};const r=await fetch(base+"/chat/completions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error("HTTP "+r.status);const j=await r.json();return j.choices?.[0]?.message?.content||"O motor respondeu sem conteúdo."}
-async function callOllama(text){const base=localStorage.getItem("thigas.ollama")||"http://127.0.0.1:11434";const body={model:localStorage.getItem("thigas.ollama.model")||"qwen2.5-coder:1.5b",messages:[{role:"system",content:"Você é THIGAS AI. Responda em português do Brasil. Memória:\n"+memoryContext()},{role:"user",content:text}],stream:false};const r=await fetch(base+"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error("HTTP "+r.status);const j=await r.json();return j.message?.content||"Ollama respondeu sem conteúdo."}
-async function callRemote(text){const endpoint=localStorage.getItem("thigas.remote");if(!endpoint)throw new Error("Nenhum endpoint remoto configurado.");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,memory:state.memory.slice(-20),history:state.history.slice(-10)})});if(!r.ok)throw new Error("HTTP "+r.status);const j=await r.json();return j.reply||j.content||j.message||"Endpoint sem resposta."}
-
-async function answer(text){const route=chooseRoute();$("#route").textContent=route;$("#backend").textContent="conectando";$("#backend").className="value warn";
-try{let reply;if(route==="ollama")reply=await callOllama(text);else if(route==="remote")reply=await callRemote(text);else reply=await callLlamaCpp(text);state.backend=route;$("#backend").textContent=route;$("#backend").className="value ok";return reply}
-catch(e){$("#backend").textContent="offline";$("#backend").className="value err";return "Não foi possível alcançar o motor selecionado ("+route+").\n\nConfigure o endpoint em Memória/Configuração ou selecione outro backend.\n\nDetalhe: "+e.message}}
-async function send(){const text=prompt.value.trim();if(!text)return;prompt.value="";autoSize();addMessage("user",text);rememberFromText(text);save();addMessage("assistant","Processando...",false);const last=messages.lastElementChild.querySelector(".content");const reply=await answer(text);last.textContent=reply;state.history.push({role:"assistant",content:reply});save()}
-function autoSize(){prompt.style.height="auto";prompt.style.height=Math.min(prompt.scrollHeight,130)+"px"}
-prompt.addEventListener("input",autoSize);prompt.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});$("#send").onclick=send;
-document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{prompt.value=b.dataset.q;autoSize();prompt.focus()});
-$("#clearBtn").onclick=()=>{state.history=[];localStorage.removeItem(CHAT);messages.innerHTML='<div id="home" class="home"><h1>Como posso ajudar?</h1><p>Terminal THIGAS AI com roteamento de modelos, memória persistente e fallback.</p></div>'};
-$("#memoryBtn").onclick=()=>alert("Memórias ficam salvas localmente neste navegador. O motor recebe apenas as memórias que o código seleciona para o contexto.");
-$("#saveMem").onclick=()=>{const v=prompt.value.trim();if(v){state.memory.push({text:v,at:Date.now()});save();prompt.value="";autoSize()}};
+const $=s=>document.querySelector(s),engine=$("#engine"),messages=$("#messages"),prompt=$("#prompt");
+const MEM="thigasai.memory.v2",CHAT="thigasai.chat.v2",CFG="thigasai.engines.v1";
+const defaults={
+llamacpp:{name:"Llama.cpp",type:"GGUF / OpenAI API",endpoint:"http://127.0.0.1:8080/v1",model:"local"},
+ollama:{name:"Ollama",type:"Local",endpoint:"http://127.0.0.1:11434",model:"qwen2.5-coder:1.5b"},
+lmstudio:{name:"LM Studio",type:"Local / OpenAI API",endpoint:"http://127.0.0.1:1234/v1",model:""},
+localai:{name:"LocalAI",type:"Local / OpenAI API",endpoint:"http://127.0.0.1:8080/v1",model:""},
+koboldcpp:{name:"KoboldCpp",type:"GGUF / API",endpoint:"http://127.0.0.1:5001",model:""},
+jan:{name:"Jan",type:"Local / OpenAI API",endpoint:"http://127.0.0.1:1337/v1",model:""},
+openai:{name:"OpenAI",type:"Online / OpenAI API",endpoint:"https://api.openai.com/v1",model:""},
+openrouter:{name:"OpenRouter",type:"Online / OpenAI-compatible",endpoint:"https://openrouter.ai/api/v1",model:""},
+custom:{name:"Custom",type:"OpenAI-compatible",endpoint:"",model:""}
+};
+const cfg=Object.assign({},defaults,JSON.parse(localStorage.getItem(CFG)||"{}"));
+const state={memory:JSON.parse(localStorage.getItem(MEM)||"[]"),history:JSON.parse(localStorage.getItem(CHAT)||"[]")};
+function save(){localStorage.setItem(MEM,JSON.stringify(state.memory.slice(-100)));localStorage.setItem(CHAT,JSON.stringify(state.history.slice(-100)));renderMemory()}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function renderMemory(){const b=$("#memoryList");$("#memCount").textContent=state.memory.length+" fatos";b.innerHTML=state.memory.length?state.memory.slice().reverse().map(x=>'<div class="memory-item">'+esc(x.text)+'</div>').join(""):'<div class="memory-item">Nenhuma memória salva.</div>'}
+function add(role,text,persist=true){$("#home")?.remove();const e=document.createElement("div");e.className="message "+role;e.innerHTML='<div class="avatar">'+(role==="user"?"U":"T")+'</div><div class="bubble"><div class="role">'+(role==="user"?"Você":"THIGAS AI")+'</div><div class="content">'+esc(text)+'</div></div>';messages.appendChild(e);messages.scrollTop=messages.scrollHeight;if(persist){state.history.push({role,content:text});save()}}
+function restore(){state.history.forEach(x=>add(x.role,x.content,false));renderMemory()}
+function remember(t){const p=[/\bmeu nome é\s+(.+)/i,/\bmoro em\s+(.+)/i,/\bmeu projeto é\s+(.+)/i,/\bminha preferência é\s+(.+)/i];p.forEach(rx=>{const m=t.match(rx);if(m&&!state.memory.some(x=>x.text.toLowerCase()===m[0].trim().toLowerCase()))state.memory.push({text:m[0].trim(),at:Date.now()})})}
+function context(){return state.memory.slice(-20).map(x=>x.text).join("\n")}
+function active(){return engine.value==="auto"?"llamacpp":engine.value}
+function selectEngine(){const id=active(),c=cfg[id]||defaults[id];$("#route").textContent=c.name;$("#endpoint").value=c.endpoint;$("#modelName").value=c.model;$("#modelStatus").textContent=c.model||"padrão";document.querySelectorAll(".engine-card").forEach(x=>x.classList.toggle("active",x.dataset.id===id))}
+function buildList(){const b=$("#engineList");b.innerHTML=Object.entries(defaults).map(([id,c])=>'<div class="engine-card" data-id="'+id+'"><div class="engine-name">'+c.name+'</div><div class="engine-type">'+c.type+'</div></div>').join("");b.querySelectorAll(".engine-card").forEach(x=>x.onclick=()=>{engine.value=x.dataset.id;selectEngine()})}
+function config(){const id=active();cfg[id]={...cfg[id],endpoint:$("#endpoint").value.trim(),model:$("#modelName").value.trim()};localStorage.setItem(CFG,JSON.stringify(cfg));selectEngine()}
+async function openAI(text,id){const c=cfg[id];if(!c.endpoint)throw Error("Endpoint não configurado.");let headers={"Content-Type":"application/json"};const key=localStorage.getItem("thigas."+id+".key");if(key)headers.Authorization="Bearer "+key;const body={model:c.model||"local",messages:[{role:"system",content:"Você é THIGAS AI. Responda em português do Brasil. Seja preciso e mantenha contexto. Memória relevante:\n"+context()},{role:"user",content:text}],temperature:.3,max_tokens:500};const r=await fetch(c.endpoint.replace(/\/$/,"")+"/chat/completions",{method:"POST",headers,body:JSON.stringify(body)});if(!r.ok)throw Error("HTTP "+r.status);const j=await r.json();return j.choices?.[0]?.message?.content||"O motor não retornou texto."}
+async function ollama(text){const c=cfg.ollama,r=await fetch(c.endpoint.replace(/\/$/,"")+"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:c.model||"llama3.2",messages:[{role:"system",content:"Você é THIGAS AI. Memória:\n"+context()},{role:"user",content:text}],stream:false})});if(!r.ok)throw Error("HTTP "+r.status);const j=await r.json();return j.message?.content||"Ollama sem resposta."}
+async function kobold(text){const c=cfg.koboldcpp,r=await fetch(c.endpoint.replace(/\/$/,"")+"/api/v1/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:"Você é THIGAS AI. Memória:\n"+context()+"\nUsuário: "+text+"\nTHIGAS AI:",max_length:500,temperature:.3})});if(!r.ok)throw Error("HTTP "+r.status);const j=await r.json();return j.results?.[0]?.text||"KoboldCpp sem resposta."}
+async function answer(text){const id=active();$("#backend").textContent="conectando";$("#backend").className="value warn";try{let out;if(id==="ollama")out=await ollama(text);else if(id==="koboldcpp")out=await kobold(text);else out=await openAI(text,id);$("#backend").textContent="online";$("#backend").className="value ok";return out}catch(e){$("#backend").textContent="offline";$("#backend").className="value err";return "Motor "+(cfg[id]?.name||id)+" indisponível.\n\n"+e.message+"\n\nVerifique o endpoint, o modelo e o CORS do servidor."}}
+async function send(){const t=prompt.value.trim();if(!t)return;prompt.value="";resize();add("user",t);remember(t);save();add("assistant","Processando...",false);const el=messages.lastElementChild.querySelector(".content");const out=await answer(t);el.textContent=out;state.history.push({role:"assistant",content:out});save()}
+function resize(){prompt.style.height="auto";prompt.style.height=Math.min(prompt.scrollHeight,130)+"px"}
+prompt.oninput=resize;prompt.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};$("#send").onclick=send;
+document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{prompt.value=b.dataset.q;resize();prompt.focus()});
+engine.onchange=selectEngine;$("#saveConfig").onclick=config;
+$("#clearBtn").onclick=()=>{state.history=[];localStorage.removeItem(CHAT);messages.innerHTML='<div id="home" class="home"><h1>Como posso ajudar?</h1><p>Terminal THIGAS AI com múltiplos motores, seleção de modelos e memória persistente.</p></div>'};
+$("#memoryBtn").onclick=()=>alert("A memória é local ao navegador. O conteúdo selecionado é enviado ao motor ativo junto do contexto.");
+$("#saveMem").onclick=()=>{const v=prompt.value.trim();if(v){state.memory.push({text:v,at:Date.now()});save();prompt.value="";resize()}};
 $("#forgetMem").onclick=()=>{state.memory=[];save()};
-$("#exportMem").onclick=()=>{const blob=new Blob([JSON.stringify(state.memory,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="thigas-memory.json";a.click();URL.revokeObjectURL(a.href)};
-$("#importMem").onclick=()=>$("#fileInput").click();
-$("#fileInput").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(Array.isArray(data))state.memory=data.filter(x=>x&&typeof x.text==="string").slice(-100);save()}catch{alert("Arquivo de memória inválido.")}};
-model.onchange=()=>{$("#route").textContent=chooseRoute()};
-restore();
+$("#exportMem").onclick=()=>{const a=document.createElement("a"),u=URL.createObjectURL(new Blob([JSON.stringify(state.memory,null,2)],{type:"application/json"}));a.href=u;a.download="thigas-memory.json";a.click();URL.revokeObjectURL(u)};
+$("#importMem").onclick=()=>$("#fileInput").click();$("#fileInput").onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(Array.isArray(x))state.memory=x.filter(v=>v&&typeof v.text==="string").slice(-100);save()}catch{alert("Arquivo inválido.")}};
+buildList();selectEngine();restore();
 </script>
 </body>
 </html>
