@@ -1,314 +1,1768 @@
 <!DOCTYPE html>
+<!-- Declaração do tipo de documento HTML5 -->
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THIGAS A.I - Terminal Engine</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
-        body { background: #0b0b0c; color: #e3e3e3; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        /* Layout Superior Premium */
-        header { 
-            background: #131314; 
-            border-bottom: 1px solid #2e3032; 
-            padding: 12px 24px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .title { 
-            font-weight: bold; 
-            font-size: 1.2rem; 
-            background: linear-gradient(45deg, #4285f4, #9b51e0, #24b47e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .title-glow {
-            text-shadow: 0 0 15px rgba(155, 81, 224, 0.4);
-        }
-        .controls { display: flex; gap: 12px; align-items: center; }
-        select { 
-            background: #1e1f20; 
-            color: #c4c7c5; 
-            border: 1px solid #444746; 
-            padding: 6px 12px; 
-            border-radius: 8px;
-            cursor: pointer; 
-            outline: none; 
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        select:focus { border-color: #a8c7fa; color: #fff; }
-        
-        /* Layout Principal */
-        main { flex: 1; display: flex; height: calc(100vh - 55px); background: #0b0b0c; }
-        .panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #2e3032; position: relative; }
-        .preview-panel { flex: 1; background: #0f0f11; display: flex; flex-direction: column; }
-        
-        /* Terminal Log & Chat */
-        .terminal-log { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            background: #0b0b0c;
-        }
-        .line { line-height: 1.5; white-space: pre-wrap; font-size: 0.95rem; }
-        .ascii-art { 
-            white-space: pre;
-            background: linear-gradient(90deg, #ff4e50, #f9d423, #00ff00, #00ffff, #4285f4, #9b51e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.1;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .system { color: #8ab4f8; }
-        .user { color: #fdd663; }
-        .bot { color: #81c995; }
-        
-        /* Entrada de Comandos */
-        .input-area { 
-            background: #1e1f20; 
-            border: 1px solid #444746;
-            margin: 15px;
-            padding: 12px 16px; 
-            border-radius: 24px;
-            display: flex; 
-            gap: 12px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        .prompt-symbol { color: #4285f4; font-weight: bold; align-self: center; }
-        input { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: #e3e3e3; 
-            font-size: 1rem; 
-            outline: none; 
-            font-family: inherit; 
-        }
-        input:disabled { color: #555; }
-        
-        /* Canvas (Agora a expandir para todo o ecrã direito) */
-        .canvas-container { 
-            flex: 1; /* Permite que o contentor ocupe o espaço vazio deixado pelo Sandbox */
-            background: #050506; 
-            position: relative; 
-        }
-        canvas { width: 100%; height: 100%; display: block; }
-        
-        /* Controles Mobile */
-        .mobile-pad { display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px; background: #131314; border-top: 1px solid #2e3032; }
-        .btn-pad { 
-            background: #1e1f20; 
-            border: 1px solid #444746; 
-            color: #c4c7c5; 
-            padding: 12px; 
-            text-align: center; 
-            cursor: pointer; 
-            font-weight: bold; 
-            user-select: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: background 0.1s;
-        }
-        .btn-pad:active { background: #4285f4; color: #fff; border-color: #8ab4f8; }
+<!-- Elemento raiz com idioma português do Brasil para leitores de tela -->
 
-        @media (max-width: 768px) {
-            main { flex-direction: column; }
-            .panel { border-right: none; border-bottom: 1px solid #2e3032; }
-            .mobile-pad { display: grid; }
+<head>
+    <!-- Cabeçalho do documento com metadados -->
+    <meta charset="UTF-8">
+    <!-- Define a codificação de caracteres UTF-8 para suportar acentuação -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Configura a viewport para responsividade em dispositivos móveis -->
+    
+    <meta name="description" content="Portal educacional SYS.IA_VERIFIER - Verificação de fatos sobre Inteligência Artificial">
+    <!-- Descrição SEO para motores de busca -->
+    
+    <title>SYS.IA_VERIFIER - Portal Educacional de IA</title>
+    <!-- Título da página exibido na aba do navegador -->
+    
+    <!-- Importação de fontes do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Estabelece conexão antecipada com o servidor de fontes -->
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Permite carregamento cruzado de fontes -->
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Importa as três fontes: Orbitron (títulos), Roboto (texto), Space Mono (código) -->
+
+    <style>
+        /* ============================================
+           VARIÁVEIS CSS - TEMA MATRIX CYBER
+           ============================================ */
+        :root {
+            /* Define variáveis CSS globais para o tema */
+            --cor-primaria: #000000;
+            /* Preto absoluto como cor de fundo principal */
+            
+            --cor-secundaria: #00FF41;
+            /* Verde neon como cor de destaque */
+            
+            --cor-foco: #FFD700;
+            /* Amarelo dourado para foco de teclado (alto contraste) */
+            
+            --cor-foco-alt: #FF00FF;
+            /* Magenta como alternativa de foco */
+            
+            --cor-texto: #E0E0E0;
+            /* Cinza claro para texto legível */
+            
+            --cor-overlay: rgba(0, 0, 0, 0.85);
+            /* Película escura semi-transparente */
+            
+            --fonte-titulo: 'Orbitron', sans-serif;
+            /* Fonte futurista para títulos */
+            
+            --fonte-texto: 'Roboto', sans-serif;
+            /* Fonte legível para textos longos */
+            
+            --fonte-codigo: 'Space Mono', monospace;
+            /* Fonte monoespaçada para código */
+            
+            --espacamento-base: 1rem;
+            /* Unidade base de espaçamento */
+            
+            --transicao-padrao: all 0.3s ease;
+            /* Transição suave padrão */
+        }
+
+        /* ============================================
+           MODO DE LEITURA CALMA - CHECKBOX HACK
+           ============================================ */
+        #modo-leitura {
+            /* Input checkbox oculto para controlar o modo de leitura */
+            position: absolute;
+            /* Posicionamento absoluto para remover do fluxo */
+            
+            opacity: 0;
+            /* Totalmente invisível */
+            
+            pointer-events: none;
+            /* Não interage com cliques */
+        }
+
+        /* Quando o checkbox está marcado, altera as variáveis do tema */
+        #modo-leitura:checked ~ .container-principal {
+            /* Seleciona o container principal quando checkbox está ativo */
+            --cor-primaria: #FFFFFF;
+            /* Fundo branco para modo claro */
+            
+            --cor-secundaria: #006600;
+            /* Verde escuro para contraste em fundo claro */
+            
+            --cor-texto: #000000;
+            /* Texto preto para legibilidade */
+            
+            --cor-overlay: rgba(255, 255, 255, 0.95);
+            /* Overlay claro */
+        }
+
+        #modo-leitura:checked ~ .container-principal * {
+            /* Remove animações no modo de leitura calma */
+            animation: none !important;
+            /* Desativa todas as animações */
+            
+            transition: none !important;
+            /* Desativa todas as transições */
+        }
+
+        /* ============================================
+           RESET E ESTILOS BASE
+           ============================================ */
+        * {
+            /* Seletor universal para reset */
+            margin: 0;
+            /* Remove margens padrão */
+            
+            padding: 0;
+            /* Remove preenchimentos padrão */
+            
+            box-sizing: border-box;
+            /* Inclui borda e padding no cálculo de largura/altura */
+        }
+
+        body {
+            /* Estilos do corpo da página */
+            font-family: var(--fonte-texto);
+            /* Fonte padrão Roboto */
+            
+            line-height: 1.6;
+            /* Altura de linha confortável para leitura */
+            
+            color: var(--cor-texto);
+            /* Cor de texto padrão */
+            
+            background-color: var(--cor-primaria);
+            /* Cor de fundo principal */
+            
+            overflow-x: hidden;
+            /* Previne rolagem horizontal indesejada */
+        }
+
+        /* ============================================
+           ACESSIBILIDADE - FOCO DE TECLADO
+           ============================================ */
+        *:focus-visible {
+            /* Estilo de foco visível apenas para navegação por teclado */
+            outline: 3px solid var(--cor-foco);
+            /* Borda de foco amarela de 3px */
+            
+            outline-offset: 2px;
+            /* Espaçamento entre elemento e borda de foco */
+            
+            box-shadow: 0 0 10px var(--cor-foco);
+            /* Brilho amarelo ao redor do elemento focado */
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            /* Foco específico para links e botões */
+            outline: 3px solid var(--cor-foco-alt);
+            /* Borda magenta para maior destaque */
+            
+            box-shadow: 0 0 15px var(--cor-foco-alt);
+            /* Brilho magenta mais intenso */
+        }
+
+        /* ============================================
+           SKIP LINK - PULAR PARA CONTEÚDO
+           ============================================ */
+        .skip-link {
+            /* Link de salto para acessibilidade */
+            position: absolute;
+            /* Posicionamento absoluto */
+            
+            top: -40px;
+            /* Oculto acima da viewport */
+            
+            left: 0;
+            /* Alinhado à esquerda */
+            
+            background: var(--cor-secundaria);
+            /* Fundo verde neon */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+            
+            padding: 1rem 2rem;
+            /* Espaçamento interno */
+            
+            z-index: 10000;
+            /* Camada superior */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            font-weight: bold;
+            /* Texto em negrito */
+        }
+
+        .skip-link:focus {
+            /* Quando o skip link recebe foco */
+            top: 0;
+            /* Torna-se visível no topo */
+        }
+
+        /* ============================================
+           CONTROLE DO MODO DE LEITURA
+           ============================================ */
+        .controle-modo-leitura {
+            /* Container do botão de modo de leitura */
+            position: fixed;
+            /* Fixo na tela */
+            
+            top: 20px;
+            /* 20px do topo */
+            
+            right: 20px;
+            /* 20px da direita */
+            
+            z-index: 9999;
+            /* Camada alta para ficar sobre outros elementos */
+        }
+
+        .btn-modo-leitura {
+            /* Botão para alternar modo de leitura */
+            background: var(--cor-secundaria);
+            /* Fundo verde neon */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            padding: 0.75rem 1.5rem;
+            /* Espaçamento interno */
+            
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 0.9rem;
+            /* Tamanho de fonte menor */
+            
+            cursor: pointer;
+            /* Cursor de ponteiro */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+        }
+
+        .btn-modo-leitura:hover {
+            /* Efeito hover no botão */
+            background: var(--cor-primaria);
+            /* Fundo preto */
+            
+            color: var(--cor-secundaria);
+            /* Texto verde */
+            
+            box-shadow: 0 0 20px var(--cor-secundaria);
+            /* Brilho verde */
+        }
+
+        /* ============================================
+           BANNER INFORMATIVO SUPERIOR
+           ============================================ */
+        .banner-informativo {
+            /* Banner de aviso no topo */
+            background: linear-gradient(90deg, var(--cor-secundaria), #00CC33);
+            /* Gradiente verde */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+            
+            padding: 1rem;
+            /* Espaçamento interno */
+            
+            text-align: center;
+            /* Texto centralizado */
+            
+            font-family: var(--fonte-codigo);
+            /* Fonte monoespaçada */
+            
+            font-weight: bold;
+            /* Negrito */
+            
+            position: relative;
+            /* Posicionamento relativo */
+        }
+
+        .banner-informativo::before {
+            /* Ícone de aviso antes do texto */
+            content: "⚠ ";
+            /* Símbolo de aviso */
+            
+            margin-right: 0.5rem;
+            /* Espaçamento à direita */
+        }
+
+        /* ============================================
+           HERO BANNER COM VÍDEO DE FUNDO
+           ============================================ */
+        .hero {
+            /* Seção hero com vídeo de fundo */
+            position: relative;
+            /* Posicionamento relativo para overlay */
+            
+            height: 100vh;
+            /* Altura total da viewport */
+            
+            display: flex;
+            /* Flexbox para centralização */
+            
+            align-items: center;
+            /* Alinhamento vertical central */
+            
+            justify-content: center;
+            /* Alinhamento horizontal central */
+            
+            overflow: hidden;
+            /* Oculta conteúdo que transborda */
+        }
+
+        .hero-video {
+            /* Vídeo de fundo do hero */
+            position: absolute;
+            /* Posicionamento absoluto */
+            
+            top: 0;
+            /* Alinhado ao topo */
+            
+            left: 0;
+            /* Alinhado à esquerda */
+            
+            width: 100%;
+            /* Largura total */
+            
+            height: 100%;
+            /* Altura total */
+            
+            object-fit: cover;
+            /* Cobre toda a área mantendo proporção */
+            
+            z-index: 1;
+            /* Camada inferior */
+        }
+
+        .hero-overlay {
+            /* Película escura sobre o vídeo */
+            position: absolute;
+            /* Posicionamento absoluto */
+            
+            top: 0;
+            /* Alinhado ao topo */
+            
+            left: 0;
+            /* Alinhado à esquerda */
+            
+            width: 100%;
+            /* Largura total */
+            
+            height: 100%;
+            /* Altura total */
+            
+            background: var(--cor-overlay);
+            /* Cor de overlay semi-transparente */
+            
+            z-index: 2;
+            /* Camada intermediária */
+        }
+
+        .hero-conteudo {
+            /* Conteúdo do hero */
+            position: relative;
+            /* Posicionamento relativo */
+            
+            z-index: 3;
+            /* Camada superior */
+            
+            text-align: center;
+            /* Texto centralizado */
+            
+            padding: 2rem;
+            /* Espaçamento interno */
+            
+            max-width: 900px;
+            /* Largura máxima */
+        }
+
+        .hero-titulo {
+            /* Título principal do hero */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: clamp(2rem, 5vw, 4rem);
+            /* Tamanho responsivo entre 2rem e 4rem */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde neon */
+            
+            text-shadow: 0 0 20px var(--cor-secundaria), 0 0 40px var(--cor-secundaria);
+            /* Brilho verde no texto */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+            
+            letter-spacing: 0.1em;
+            /* Espaçamento entre letras */
+        }
+
+        .hero-subtitulo {
+            /* Subtítulo do hero */
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            /* Tamanho responsivo */
+            
+            color: var(--cor-texto);
+            /* Cor de texto padrão */
+            
+            margin-bottom: 2rem;
+            /* Espaçamento inferior */
+        }
+
+        .hero-botao {
+            /* Botão de call-to-action no hero */
+            display: inline-block;
+            /* Exibição inline-block */
+            
+            background: var(--cor-secundaria);
+            /* Fundo verde */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+            
+            padding: 1rem 2rem;
+            /* Espaçamento interno */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-weight: bold;
+            /* Negrito */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+        }
+
+        .hero-botao:hover {
+            /* Efeito hover no botão */
+            background: transparent;
+            /* Fundo transparente */
+            
+            color: var(--cor-secundaria);
+            /* Texto verde */
+            
+            box-shadow: 0 0 30px var(--cor-secundaria);
+            /* Brilho verde intenso */
+        }
+
+        /* ============================================
+           NAVEGAÇÃO STICKY
+           ============================================ */
+        .nav-principal {
+            /* Menu de navegação principal */
+            position: sticky;
+            /* Fixa no topo ao rolar */
+            
+            top: 0;
+            /* Alinhado ao topo */
+            
+            background: var(--cor-primaria);
+            /* Fundo preto */
+            
+            border-bottom: 2px solid var(--cor-secundaria);
+            /* Borda inferior verde */
+            
+            padding: 1rem 2rem;
+            /* Espaçamento interno */
+            
+            z-index: 1000;
+            /* Camada alta */
+            
+            box-shadow: 0 2px 10px rgba(0, 255, 65, 0.3);
+            /* Sombra verde sutil */
+        }
+
+        .nav-container {
+            /* Container da navegação */
+            max-width: 1200px;
+            /* Largura máxima */
+            
+            margin: 0 auto;
+            /* Centralização horizontal */
+            
+            display: flex;
+            /* Flexbox */
+            
+            justify-content: space-between;
+            /* Espaçamento entre itens */
+            
+            align-items: center;
+            /* Alinhamento vertical central */
+            
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+        }
+
+        .nav-logo {
+            /* Logo da navegação */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.5rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            text-shadow: 0 0 10px var(--cor-secundaria);
+            /* Brilho verde */
+        }
+
+        .nav-menu {
+            /* Lista de menu */
+            display: flex;
+            /* Flexbox */
+            
+            list-style: none;
+            /* Remove marcadores de lista */
+            
+            gap: 2rem;
+            /* Espaçamento entre itens */
+            
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+        }
+
+        .nav-link {
+            /* Links do menu */
+            color: var(--cor-texto);
+            /* Cor de texto padrão */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 0.9rem;
+            /* Tamanho de fonte */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+            
+            padding: 0.5rem;
+            /* Espaçamento interno */
+        }
+
+        .nav-link:hover {
+            /* Efeito hover nos links */
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            text-shadow: 0 0 10px var(--cor-secundaria);
+            /* Brilho verde */
+        }
+
+        /* ============================================
+           CONTAINER PRINCIPAL
+           ============================================ */
+        .container-principal {
+            /* Container principal do conteúdo */
+            max-width: 1200px;
+            /* Largura máxima */
+            
+            margin: 0 auto;
+            /* Centralização horizontal */
+            
+            padding: 2rem;
+            /* Espaçamento interno */
+        }
+
+        /* ============================================
+           SEÇÕES GERAIS
+           ============================================ */
+        section {
+            /* Todas as seções */
+            margin-bottom: 4rem;
+            /* Espaçamento inferior entre seções */
+        }
+
+        .secao-titulo {
+            /* Títulos das seções */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            /* Tamanho responsivo */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            text-shadow: 0 0 15px var(--cor-secundaria);
+            /* Brilho verde */
+            
+            margin-bottom: 2rem;
+            /* Espaçamento inferior */
+            
+            text-align: center;
+            /* Texto centralizado */
+            
+            letter-spacing: 0.05em;
+            /* Espaçamento entre letras */
+        }
+
+        /* ============================================
+           SEÇÃO HOME - MITOS VS VERDADES
+           ============================================ */
+        .mitos-container {
+            /* Container de mitos e verdades */
+            display: flex;
+            /* Flexbox */
+            
+            flex-direction: column;
+            /* Direção vertical */
+            
+            gap: 2rem;
+            /* Espaçamento entre itens */
+        }
+
+        .mito-card {
+            /* Card individual de mito/verdade */
+            background: rgba(0, 255, 65, 0.05);
+            /* Fundo verde muito sutil */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            
+            padding: 2rem;
+            /* Espaçamento interno */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+        }
+
+        .mito-card:hover {
+            /* Efeito hover no card */
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+            /* Brilho verde */
+            
+            transform: translateY(-5px);
+            /* Eleva o card */
+        }
+
+        .mito-titulo {
+            /* Título do mito */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.5rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+        }
+
+        .mito-titulo::before {
+            /* Ícone antes do título */
+            content: " ";
+            /* Símbolo de seta */
+        }
+
+        .mito-conteudo {
+            /* Conteúdo do mito */
+            font-size: 1.1rem;
+            /* Tamanho de fonte */
+            
+            line-height: 1.8;
+            /* Altura de linha confortável */
+        }
+
+        .verdade {
+            /* Destaque para verdades */
+            background: rgba(0, 255, 65, 0.1);
+            /* Fundo verde sutil */
+            
+            border-left: 4px solid var(--cor-secundaria);
+            /* Borda esquerda verde */
+            
+            padding: 1rem;
+            /* Espaçamento interno */
+            
+            margin-top: 1rem;
+            /* Espaçamento superior */
+            
+            font-weight: bold;
+            /* Negrito */
+        }
+
+        .verdade::before {
+            /* Ícone de verificação */
+            content: "✓ VERDADE: ";
+            /* Texto de verificação */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+        }
+
+        /* ============================================
+           SEÇÃO CURSOS - GRID DE VÍDEOS
+           ============================================ */
+        .cursos-grid {
+            /* Grid de cursos */
+            display: flex;
+            /* Flexbox */
+            
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+            
+            gap: 2rem;
+            /* Espaçamento entre cards */
+            
+            justify-content: center;
+            /* Centralização horizontal */
+        }
+
+        .curso-card {
+            /* Card de curso individual */
+            background: rgba(0, 255, 65, 0.05);
+            /* Fundo verde sutil */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            
+            overflow: hidden;
+            /* Oculta conteúdo que transborda */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+            
+            flex: 1 1 300px;
+            /* Flexibilidade: cresce, encolhe, base 300px */
+            
+            max-width: 400px;
+            /* Largura máxima */
+        }
+
+        .curso-card:hover {
+            /* Efeito hover no card de curso */
+            transform: translateY(-10px);
+            /* Eleva o card */
+            
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.5);
+            /* Sombra verde */
+        }
+
+        .curso-imagem {
+            /* Imagem thumbnail do curso */
+            width: 100%;
+            /* Largura total */
+            
+            height: 200px;
+            /* Altura fixa */
+            
+            object-fit: cover;
+            /* Cobre a área mantendo proporção */
+            
+            display: block;
+            /* Exibição em bloco */
+        }
+
+        .curso-conteudo {
+            /* Conteúdo do card de curso */
+            padding: 1.5rem;
+            /* Espaçamento interno */
+        }
+
+        .curso-titulo {
+            /* Título do curso */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.3rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            margin-bottom: 0.5rem;
+            /* Espaçamento inferior */
+        }
+
+        .curso-descricao {
+            /* Descrição do curso */
+            font-size: 0.95rem;
+            /* Tamanho de fonte */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+            
+            line-height: 1.6;
+            /* Altura de linha */
+        }
+
+        .curso-link {
+            /* Link do curso */
+            display: inline-block;
+            /* Exibição inline-block */
+            
+            background: var(--cor-secundaria);
+            /* Fundo verde */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+            
+            padding: 0.75rem 1.5rem;
+            /* Espaçamento interno */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-weight: bold;
+            /* Negrito */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+        }
+
+        .curso-link:hover {
+            /* Efeito hover no link */
+            background: transparent;
+            /* Fundo transparente */
+            
+            color: var(--cor-secundaria);
+            /* Texto verde */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+        }
+
+        /* ============================================
+           SEÇÃO IAs GLOBAIS - DIRETÓRIO
+           ============================================ */
+        .ias-grid {
+            /* Grid de IAs */
+            display: flex;
+            /* Flexbox */
+            
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+            
+            gap: 1.5rem;
+            /* Espaçamento entre cards */
+            
+            justify-content: center;
+            /* Centralização */
+        }
+
+        .ia-card {
+            /* Card de IA individual */
+            background: rgba(0, 255, 65, 0.05);
+            /* Fundo verde sutil */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            
+            padding: 2rem;
+            /* Espaçamento interno */
+            
+            text-align: center;
+            /* Texto centralizado */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+            
+            flex: 1 1 250px;
+            /* Flexibilidade */
+            
+            max-width: 300px;
+            /* Largura máxima */
+        }
+
+        .ia-card:hover {
+            /* Efeito hover */
+            transform: scale(1.05);
+            /* Aumenta ligeiramente */
+            
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.6);
+            /* Brilho verde */
+        }
+
+        .ia-nome {
+            /* Nome da IA */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.4rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            margin-bottom: 0.5rem;
+            /* Espaçamento inferior */
+        }
+
+        .ia-pais {
+            /* País de origem */
+            font-size: 0.9rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-texto);
+            /* Cor de texto */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+            
+            font-style: italic;
+            /* Itálico */
+        }
+
+        .ia-descricao {
+            /* Descrição da IA */
+            font-size: 0.95rem;
+            /* Tamanho de fonte */
+            
+            line-height: 1.6;
+            /* Altura de linha */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+        }
+
+        .ia-link {
+            /* Link da IA */
+            display: inline-block;
+            /* Exibição inline-block */
+            
+            background: transparent;
+            /* Fundo transparente */
+            
+            color: var(--cor-secundaria);
+            /* Texto verde */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            padding: 0.5rem 1rem;
+            /* Espaçamento interno */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            font-family: var(--fonte-codigo);
+            /* Fonte monoespaçada */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+        }
+
+        .ia-link:hover {
+            /* Efeito hover */
+            background: var(--cor-secundaria);
+            /* Fundo verde */
+            
+            color: var(--cor-primaria);
+            /* Texto preto */
+        }
+
+        /* ============================================
+           TERMINAL DE COMANDOS
+           ============================================ */
+        .caixa-prompt {
+            /* Caixa de terminal de comandos */
+            background: #0a0a0a;
+            /* Fundo quase preto */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            
+            padding: 1.5rem;
+            /* Espaçamento interno */
+            
+            margin: 2rem 0;
+            /* Espaçamento vertical */
+            
+            font-family: var(--fonte-codigo);
+            /* Fonte monoespaçada */
+            
+            position: relative;
+            /* Posicionamento relativo */
+        }
+
+        .caixa-prompt::before {
+            /* Cabeçalho do terminal */
+            content: "TERMINAL SYS.IA";
+            /* Texto do cabeçalho */
+            
+            position: absolute;
+            /* Posicionamento absoluto */
+            
+            top: -12px;
+            /* Posição acima da borda */
+            
+            left: 20px;
+            /* Espaçamento da esquerda */
+            
+            background: var(--cor-primaria);
+            /* Fundo preto */
+            
+            color: var(--cor-secundaria);
+            /* Texto verde */
+            
+            padding: 0 10px;
+            /* Espaçamento horizontal */
+            
+            font-size: 0.8rem;
+            /* Tamanho de fonte menor */
+            
+            font-weight: bold;
+            /* Negrito */
+        }
+
+        .prompt-linha {
+            /* Linha de comando */
+            margin-bottom: 0.5rem;
+            /* Espaçamento inferior */
+            
+            font-size: 0.95rem;
+            /* Tamanho de fonte */
+        }
+
+        .prompt-comando {
+            /* Comando digitado */
+            color: var(--cor-secundaria);
+            /* Cor verde */
+        }
+
+        .prompt-comando::before {
+            /* Prefixo do prompt */
+            content: "$ ";
+            /* Símbolo de prompt */
+        }
+
+        .prompt-resposta {
+            /* Resposta do sistema */
+            color: var(--cor-texto);
+            /* Cor de texto padrão */
+            
+            margin-left: 1rem;
+            /* Indentação */
+        }
+
+        /* ============================================
+           PAINEL DE ACESSIBILIDADE MULTIMÍDIA
+           ============================================ */
+        .acessibilidade-painel {
+            /* Painel de acessibilidade */
+            background: rgba(0, 255, 65, 0.05);
+            /* Fundo verde sutil */
+            
+            border: 2px solid var(--cor-secundaria);
+            /* Borda verde */
+            
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            
+            padding: 2rem;
+            /* Espaçamento interno */
+            
+            margin: 3rem 0;
+            /* Espaçamento vertical */
+        }
+
+        .acessibilidade-titulo {
+            /* Título do painel */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.5rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            margin-bottom: 1.5rem;
+            /* Espaçamento inferior */
+        }
+
+        .audio-player {
+            /* Player de áudio */
+            width: 100%;
+            /* Largura total */
+            
+            margin-bottom: 2rem;
+            /* Espaçamento inferior */
+        }
+
+        .audio-player audio {
+            /* Elemento de áudio */
+            width: 100%;
+            /* Largura total */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+        }
+
+        .transcricao {
+            /* Seção de transcrição */
+            margin-top: 1rem;
+            /* Espaçamento superior */
+        }
+
+        .transcricao summary {
+            /* Cabeçalho do details */
+            font-family: var(--fonte-titulo);
+            /* Fonte Orbitron */
+            
+            font-size: 1.2rem;
+            /* Tamanho de fonte */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            cursor: pointer;
+            /* Cursor de ponteiro */
+            
+            padding: 0.5rem;
+            /* Espaçamento interno */
+        }
+
+        .transcricao summary:hover {
+            /* Efeito hover */
+            text-shadow: 0 0 10px var(--cor-secundaria);
+            /* Brilho verde */
+        }
+
+        .transcricao-conteudo {
+            /* Conteúdo da transcrição */
+            padding: 1rem;
+            /* Espaçamento interno */
+            
+            background: rgba(0, 0, 0, 0.3);
+            /* Fundo escuro sutil */
+            
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            
+            margin-top: 1rem;
+            /* Espaçamento superior */
+            
+            line-height: 1.8;
+            /* Altura de linha confortável */
+        }
+
+        /* ============================================
+           RODAPÉ
+           ============================================ */
+        footer {
+            /* Rodapé da página */
+            background: var(--cor-primaria);
+            /* Fundo preto */
+            
+            border-top: 2px solid var(--cor-secundaria);
+            /* Borda superior verde */
+            
+            padding: 3rem 2rem;
+            /* Espaçamento interno */
+            
+            text-align: center;
+            /* Texto centralizado */
+        }
+
+        .footer-conteudo {
+            /* Conteúdo do rodapé */
+            max-width: 1200px;
+            /* Largura máxima */
+            
+            margin: 0 auto;
+            /* Centralização */
+        }
+
+        .footer-texto {
+            /* Texto do rodapé */
+            font-family: var(--fonte-codigo);
+            /* Fonte monoespaçada */
+            
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            margin-bottom: 1rem;
+            /* Espaçamento inferior */
+        }
+
+        .footer-links {
+            /* Links do rodapé */
+            display: flex;
+            /* Flexbox */
+            
+            justify-content: center;
+            /* Centralização */
+            
+            gap: 2rem;
+            /* Espaçamento entre links */
+            
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+        }
+
+        .footer-link {
+            /* Link individual do rodapé */
+            color: var(--cor-texto);
+            /* Cor de texto */
+            
+            text-decoration: none;
+            /* Remove sublinhado */
+            
+            transition: var(--transicao-padrao);
+            /* Transição suave */
+        }
+
+        .footer-link:hover {
+            /* Efeito hover */
+            color: var(--cor-secundaria);
+            /* Cor verde */
+            
+            text-shadow: 0 0 10px var(--cor-secundaria);
+            /* Brilho verde */
+        }
+
+        /* ============================================
+           RESPONSIVIDADE - MEDIA QUERIES
+           ============================================ */
+        @media screen and (max-width: 768px) {
+            /* Estilos para tablets e dispositivos médios */
+            .nav-container {
+                /* Container da navegação */
+                flex-direction: column;
+                /* Direção vertical */
+                
+                gap: 1rem;
+                /* Espaçamento entre itens */
+            }
+
+            .nav-menu {
+                /* Menu de navegação */
+                justify-content: center;
+                /* Centralização */
+                
+                gap: 1rem;
+                /* Espaçamento reduzido */
+            }
+
+            .hero-conteudo {
+                /* Conteúdo do hero */
+                padding: 1rem;
+                /* Espaçamento reduzido */
+            }
+
+            .container-principal {
+                /* Container principal */
+                padding: 1rem;
+                /* Espaçamento reduzido */
+            }
+
+            .mito-card,
+            .curso-card,
+            .ia-card {
+                /* Cards em geral */
+                flex: 1 1 100%;
+                /* Largura total */
+                
+                max-width: 100%;
+                /* Sem largura máxima */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            /* Estilos para smartphones */
+            .hero-titulo {
+                /* Título do hero */
+                font-size: 1.8rem;
+                /* Tamanho reduzido */
+            }
+
+            .secao-titulo {
+                /* Títulos de seção */
+                font-size: 1.5rem;
+                /* Tamanho reduzido */
+            }
+
+            .nav-link {
+                /* Links de navegação */
+                font-size: 0.8rem;
+                /* Tamanho reduzido */
+                
+                padding: 0.3rem;
+                /* Espaçamento reduzido */
+            }
+
+            .caixa-prompt {
+                /* Caixa de prompt */
+                padding: 1rem;
+                /* Espaçamento reduzido */
+                
+                font-size: 0.85rem;
+                /* Tamanho de fonte reduzido */
+            }
+
+            .controle-modo-leitura {
+                /* Controle de modo de leitura */
+                top: 10px;
+                /* Posição ajustada */
+                
+                right: 10px;
+                /* Posição ajustada */
+            }
+
+            .btn-modo-leitura {
+                /* Botão de modo de leitura */
+                padding: 0.5rem 1rem;
+                /* Espaçamento reduzido */
+                
+                font-size: 0.8rem;
+                /* Tamanho de fonte reduzido */
+            }
+        }
+
+        /* ============================================
+           ANIMAÇÕES
+           ============================================ */
+        @keyframes brilho-pulsar {
+            /* Animação de brilho pulsante */
+            0%, 100% {
+                /* Início e fim */
+                text-shadow: 0 0 10px var(--cor-secundaria);
+                /* Brilho normal */
+            }
+
+            50% {
+                /* Meio da animação */
+                text-shadow: 0 0 20px var(--cor-secundaria), 0 0 30px var(--cor-secundaria);
+                /* Brilho intenso */
+            }
+        }
+
+        .animacao-brilho {
+            /* Classe para aplicar animação de brilho */
+            animation: brilho-pulsar 2s ease-in-out infinite;
+            /* Animação infinita de 2 segundos */
+        }
+
+        /* ============================================
+           UTILITÁRIOS
+           ============================================ */
+        .texto-centro {
+            /* Classe utilitária para centralizar texto */
+            text-align: center;
+            /* Alinhamento central */
+        }
+
+        .margem-inferior {
+            /* Classe utilitária para margem inferior */
+            margin-bottom: 2rem;
+            /* Espaçamento inferior */
         }
     </style>
-    <script type="module">
-        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.19';
-        window.pipeline = pipeline;
-    </script>
 </head>
+
 <body>
+    <!-- Corpo do documento -->
 
-<header>
-    <div class="title title-glow">✦ THIGAS A.I // BROWSER ENGINE v3.6 ✦</div>
-    <div class="controls">
-        <label for="model-select" style="font-size: 0.8rem; color: #9aa0a6;">MODELO:</label>
-        <select id="model-select" onchange="switchModel(this.value)">
-            <option value="HuggingFaceTB/SmolLM2-360M-Instruct">THIGAS A.I (SmolLM2 360M)</option>
-            <option value="Qwen/Qwen2.5-Coder-0.5B-Instruct">Qwen 2.5 Coder (0.5B)</option>
-            <option value="HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2 Micro (135M)</option>
-        </select>
-    </div>
-</header>
+    <!-- Skip Link para acessibilidade - permite pular para o conteúdo principal -->
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
 
-<main>
-    <div class="panel">
-        <div class="terminal-log" id="terminal-screen">
-            <div class="ascii-art" id="ascii-banner">
- ████████╗██╗  ██╗██╗ ██████╗  █████╗  ███████╗     █████╗ ██╗
- ╚══██╔══╝██║  ██║██║██╔════╝ ██╔══██╗ ██╔════╝    ██╔══██╗██║
-    ██║   ███████║██║██║  ███╗███████║ ███████╗    ███████║██║
-    ██║   ██╔══██║██║██║   ██║██╔══██║ ╚════██║    ██╔══██║██║
-    ██║   ██║  ██║██║╚██████╔╝██║  ██║ ███████║    ██║  ██║██║
-    ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚══════╝    ╚═╝  ╚═╝╚═╝</div>
-            <div class="line system">[SISTEMA] Motor Gemini UI ativado com sucesso para dispositivos móveis.</div>
-            <div class="line system" id="progress-line">[SISTEMA] Sincronizando núcleos e alocando memória RAM local...</div>
-        </div>
-        <div class="input-area">
-            <span class="prompt-symbol">✦</span>
-            <input type="text" id="cmd-input" placeholder="Aguardando carregamento da LLM..." disabled>
-        </div>
-        <div class="mobile-pad">
-            <div class="btn-pad" onclick="sendMobileKey('Ação')">AÇÃO</div>
-            <div class="btn-pad" onclick="sendMobileKey('Cima')">▲</div>
-            <div class="btn-pad" onclick="sendMobileKey('Menu')">MENU</div>
-            <div class="btn-pad" onclick="sendMobileKey('Esquerda')">◀</div>
-            <div class="btn-pad" onclick="sendMobileKey('Baixo')">▼</div>
-            <div class="btn-pad" onclick="sendMobileKey('Direita')">▶</div>
-        </div>
+    <!-- Checkbox oculto para controlar o modo de leitura calma (Checkbox Hack) -->
+    <input type="checkbox" id="modo-leitura" aria-label="Ativar modo de leitura calma">
+
+    <!-- Label do checkbox que funciona como botão visível -->
+    <div class="controle-modo-leitura">
+        <label for="modo-leitura" class="btn-modo-leitura" role="button" aria-label="Alternar modo de leitura calma para melhor acessibilidade">
+            📖 Modo Leitura Calma
+        </label>
     </div>
 
-    <!-- O Painel agora contém unicamente o ecrã de pintura (Canvas) -->
-    <div class="preview-panel">
-        <div class="canvas-container">
-            <canvas id="retro-canvas"></canvas>
+    <!-- Container principal que recebe as variáveis CSS do modo de leitura -->
+    <div class="container-principal">
+
+        <!-- Banner informativo superior com aviso do sistema -->
+        <div class="banner-informativo" role="alert" aria-label="Aviso importante do sistema">
+            Sistema SYS.IA_VERIFIER ativo | Portal educacional sobre Inteligência Artificial | Verificação de fatos em tempo real
         </div>
+
+        <!-- Hero Banner com vídeo de fundo -->
+        <header class="hero" role="banner" aria-label="Banner principal do portal">
+            <!-- Vídeo de fundo em loop, sem som, com autoplay -->
+            <video class="hero-video" autoplay muted loop playsinline aria-hidden="true">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos HTML5.
+            </video>
+
+            <!-- Película escura sobre o vídeo para garantir contraste do texto -->
+            <div class="hero-overlay" aria-hidden="true"></div>
+
+            <!-- Conteúdo do hero -->
+            <div class="hero-conteudo">
+                <h1 class="hero-titulo animacao-brilho">SYS.IA_VERIFIER</h1>
+                <p class="hero-subtitulo">Portal Educacional de Verificação de Fatos sobre Inteligência Artificial</p>
+                <a href="#conteudo-principal" class="hero-botao" aria-label="Explorar conteúdo do portal">EXPLORAR SISTEMA</a>
+            </div>
+        </header>
+
+        <!-- Navegação principal sticky (fixa ao rolar) -->
+        <nav class="nav-principal" role="navigation" aria-label="Menu principal de navegação">
+            <div class="nav-container">
+                <!-- Logo do portal -->
+                <a href="#" class="nav-logo" aria-label="SYS.IA Verifier - Página inicial">SYS.IA</a>
+
+                <!-- Menu de navegação -->
+                <ul class="nav-menu" role="menubar">
+                    <li role="none">
+                        <a href="#home" class="nav-link" role="menuitem">Home</a>
+                    </li>
+                    <li role="none">
+                        <a href="#cursos" class="nav-link" role="menuitem">Cursos</a>
+                    </li>
+                    <li role="none">
+                        <a href="#ias-globais" class="nav-link" role="menuitem">IAs Globais</a>
+                    </li>
+                    <li role="none">
+                        <a href="#acessibilidade" class="nav-link" role="menuitem">Acessibilidade</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal da página -->
+        <main id="conteudo-principal" role="main" aria-label="Conteúdo principal">
+
+            <!-- SEÇÃO 1: HOME - MITOS VS VERDADES SOBRE IA -->
+            <section id="home" aria-labelledby="titulo-home">
+                <h2 id="titulo-home" class="secao-titulo">VERIFICAÇÃO DE FATOS: MITOS vs VERDADES</h2>
+
+                <div class="mitos-container">
+                    <!-- Card de Mito 1 -->
+                    <article class="mito-card" aria-label="Mito sobre alucinação de IA">
+                        <h3 class="mito-titulo">MITO: "IA alucina porque é burra"</h3>
+                        <div class="mito-conteudo">
+                            <p>Muitas pessoas acreditam que quando uma IA inventa informações, isso significa que ela é "burra" ou "defeituosa". Na realidade, as IAs generativas funcionam prevendo padrões estatísticos em grandes volumes de dados.</p>
+                            
+                            <div class="verdade">
+                                As IAs não "mentem" intencionalmente - elas geram texto baseado em probabilidades. Quando faltam dados precisos no treinamento, podem produzir informações incorretas. Isso é chamado de "alucinação" e é uma limitação conhecida, não burrice.
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card de Mito 2 -->
+                    <article class="mito-card" aria-label="Mito sobre consciência da IA">
+                        <h3 class="mito-titulo">MITO: "IA tem consciência e sentimentos"</h3>
+                        <div class="mito-conteudo">
+                            <p>Filmes e séries frequentemente retratam IAs como seres conscientes capazes de sentir emoções. Isso cria expectativas irreais sobre as capacidades reais da tecnologia atual.</p>
+                            
+                            <div class="verdade">
+                                IAs atuais NÃO possuem consciência, emoções ou autoconsciência. Elas processam dados e geram respostas baseadas em padrões aprendidos. Quando uma IA diz "estou triste", está apenas reproduzindo padrões de linguagem, não expressando sentimento real.
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card de Mito 3 -->
+                    <article class="mito-card" aria-label="Mito sobre substituição de empregos">
+                        <h3 class="mito-titulo">MITO: "IA vai substituir todos os empregos"</h3>
+                        <div class="mito-conteudo">
+                            <p>Existe um medo generalizado de que a IA eliminará todas as profissões humanas, tornando pessoas obsoletas no mercado de trabalho.</p>
+                            
+                            <div class="verdade">
+                                A IA transforma empregos, não necessariamente os elimina. Historicamente, tecnologias criam novas funções enquanto automatizam tarefas repetitivas. O futuro provavelmente verá humanos trabalhando COM IA, não sendo substituídos por ela. Habilidades como criatividade, empatia e pensamento crítico permanecem essencialmente humanas.
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card de Mito 4 -->
+                    <article class="mito-card" aria-label="Mito sobre IA sempre correta">
+                        <h3 class="mito-titulo">MITO: "IA sempre está correta"</h3>
+                        <div class="mito-conteudo">
+                            <p>Muitos usuários tratam respostas de IA como verdades absolutas, sem questionar ou verificar as informações fornecidas.</p>
+                            
+                            <div class="verdade">
+                                IAs podem cometer erros, ter vieses e produzir informações desatualizadas. Sempre verifique fatos importantes em fontes confiáveis. A IA é uma ferramenta auxiliar, não uma autoridade infalível. Pensamento crítico humano é essencial.
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Terminal de Comandos - Exemplo Educativo -->
+                <div class="caixa-prompt" role="region" aria-label="Exemplo de terminal de comandos">
+                    <div class="prompt-linha">
+                        <span class="prompt-comando">verificar_fato --mito="IA tem consciência"</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-resposta">→ FALSO: IAs atuais não possuem consciência ou emoções</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-comando">explicar --topico="alucinação_de_IA"</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-resposta">→ Alucinação: quando IA gera informações incorretas baseadas em padrões estatísticos</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO 2: CURSOS YT - MÓDULOS EDUCACIONAIS -->
+            <section id="cursos" aria-labelledby="titulo-cursos">
+                <h2 id="titulo-cursos" class="secao-titulo">MÓDULOS EDUCACIONAIS EM VÍDEO</h2>
+
+                <div class="cursos-grid">
+                    <!-- Curso 1 -->
+                    <article class="curso-card" aria-label="Curso sobre fundamentos de IA">
+                        <img src="https://image.qwenlm.ai/public_source/9bf061ed-e2fd-4e48-bf47-40af4cb2281b/142ead4d2-ae8b-4318-8237-4e7efb0bfe39.png" 
+                             alt="Ilustração de cérebro digital com circuitos representando inteligência artificial" 
+                             class="curso-imagem"
+                             loading="lazy">
+                        <div class="curso-conteudo">
+                            <h3 class="curso-titulo">Fundamentos de IA</h3>
+                            <p class="curso-descricao">Aprenda os conceitos básicos de Inteligência Artificial, machine learning e como as IAs funcionam.</p>
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="curso-link" aria-label="Assistir curso de Fundamentos de IA no YouTube">
+                                ▶ ASSISTIR
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Curso 2 -->
+                    <article class="curso-card" aria-label="Curso sobre engenharia de prompts">
+                        <img src="https://image.qwenlm.ai/public_source/9bf061ed-e2fd-4e48-bf47-40af4cb2281b/1e7a79fbc-787e-4c5b-878b-dcc19177e6bc.png" 
+                             alt="Teclado holográfico com texto flutuante sobre engenharia de prompts" 
+                             class="curso-imagem"
+                             loading="lazy">
+                        <div class="curso-conteudo">
+                            <h3 class="curso-titulo">Engenharia de Prompts</h3>
+                            <p class="curso-descricao">Domine a arte de criar prompts eficazes para obter melhores resultados de IAs generativas.</p>
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="curso-link" aria-label="Assistir curso de Engenharia de Prompts no YouTube">
+                                ▶ ASSISTIR
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Curso 3 -->
+                    <article class="curso-card" aria-label="Curso sobre ética e verificação de fatos">
+                        <img src="https://image.qwenlm.ai/public_source/9bf061ed-e2fd-4e48-bf47-40af4cb2281b/1a4f86f6c-f124-4b69-b51d-887a47f2d9aa.png" 
+                             alt="Lupa examinando dados digitais sobre verificação de conteúdo gerado por IA" 
+                             class="curso-imagem"
+                             loading="lazy">
+                        <div class="curso-conteudo">
+                            <h3 class="curso-titulo">Ética e Verificação</h3>
+                            <p class="curso-descricao">Entenda os desafios éticos da IA e aprenda a verificar fatos em conteúdo gerado por inteligência artificial.</p>
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="curso-link" aria-label="Assistir curso de Ética e Verificação no YouTube">
+                                ▶ ASSISTIR
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Curso 4 -->
+                    <article class="curso-card" aria-label="Curso sobre machine learning">
+                        <img src="https://image.qwenlm.ai/public_source/9bf061ed-e2fd-4e48-bf47-40af4cb2281b/16a652500-7b5a-4e9d-8fd4-6eacf28f92e8.png" 
+                             alt="Visualização de rede neural com nós interconectados em verde neon" 
+                             class="curso-imagem"
+                             loading="lazy">
+                        <div class="curso-conteudo">
+                            <h3 class="curso-titulo">Machine Learning Básico</h3>
+                            <p class="curso-descricao">Introdução ao aprendizado de máquina: como IAs aprendem com dados e melhoram com o tempo.</p>
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="curso-link" aria-label="Assistir curso de Machine Learning no YouTube">
+                                ▶ ASSISTIR
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- SEÇÃO 3: IAs GLOBAIS - DIRETÓRIO -->
+            <section id="ias-globais" aria-labelledby="titulo-ias">
+                <h2 id="titulo-ias" class="secao-titulo">DIRETÓRIO DE IAs GLOBAIS</h2>
+
+                <div class="ias-grid">
+                    <!-- IA: ChatGPT -->
+                    <article class="ia-card" aria-label="ChatGPT - Estados Unidos">
+                        <h3 class="ia-nome">ChatGPT</h3>
+                        <p class="ia-pais">🇺🇸 Estados Unidos - OpenAI</p>
+                        <p class="ia-descricao">Modelo de linguagem avançado para conversação, criação de texto e análise de dados.</p>
+                        <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar ChatGPT">
+                            ACESSAR
+                        </a>
+                    </article>
+
+                    <!-- IA: Gemini -->
+                    <article class="ia-card" aria-label="Gemini - Estados Unidos">
+                        <h3 class="ia-nome">Gemini</h3>
+                        <p class="ia-pais">🇺🇸 Estados Unidos - Google</p>
+                        <p class="ia-descricao">IA multimodal do Google com capacidades de texto, imagem e análise avançada.</p>
+                        <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar Gemini">
+                            ACESSAR
+                        </a>
+                    </article>
+
+                    <!-- IA: Claude -->
+                    <article class="ia-card" aria-label="Claude - Estados Unidos">
+                        <h3 class="ia-nome">Claude</h3>
+                        <p class="ia-pais">🇺🇸 Estados Unidos - Anthropic</p>
+                        <p class="ia-descricao">Assistente de IA focado em segurança e análise detalhada de documentos longos.</p>
+                        <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar Claude">
+                            ACESSAR
+                        </a>
+                    </article>
+
+                    <!-- IA: DeepSeek -->
+                    <article class="ia-card" aria-label="DeepSeek - China">
+                        <h3 class="ia-nome">DeepSeek</h3>
+                        <p class="ia-pais">🇨🇳 China - DeepSeek AI</p>
+                        <p class="ia-descricao">Modelo chinês de código aberto com forte desempenho em raciocínio matemático.</p>
+                        <a href="https://deepseek.com" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar DeepSeek">
+                            ACESSAR
+                        </a>
+                    </article>
+
+                    <!-- IA: Qwen -->
+                    <article class="ia-card" aria-label="Qwen - China">
+                        <h3 class="ia-nome">Qwen</h3>
+                        <p class="ia-pais">🇨🇳 China - Alibaba Cloud</p>
+                        <p class="ia-descricao">Família de modelos de linguagem da Alibaba com suporte multilíngue robusto.</p>
+                        <a href="https://qwen.ai" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar Qwen">
+                            ACESSAR
+                        </a>
+                    </article>
+
+                    <!-- IA: Kimi -->
+                    <article class="ia-card" aria-label="Kimi - China">
+                        <h3 class="ia-nome">Kimi</h3>
+                        <p class="ia-pais">🇨🇳 China - Moonshot AI</p>
+                        <p class="ia-descricao">Assistente de IA especializado em processamento de contextos muito longos.</p>
+                        <a href="https://kimi.moonshot.cn" target="_blank" rel="noopener noreferrer" class="ia-link" aria-label="Acessar Kimi">
+                            ACESSAR
+                        </a>
+                    </article>
+                </div>
+
+                <!-- Terminal de Comandos - Exemplo de Prompt Educativo -->
+                <div class="caixa-prompt" role="region" aria-label="Exemplo de prompt educativo">
+                    <div class="prompt-linha">
+                        <span class="prompt-comando">prompt --tipo="educativo" --nivel="basico"</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-resposta">→ "Explique como funciona uma IA usando analogias do dia a dia para um estudante de 12 anos"</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-comando">gerar_exemplo --assunto="fotossíntese"</span>
+                    </div>
+                    <div class="prompt-linha">
+                        <span class="prompt-resposta">→ "Crie uma analogia simples explicando fotossíntese como se fosse uma fábrica de alimentos"</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAINEL DE ACESSIBILIDADE MULTIMÍDIA -->
+            <section id="acessibilidade" class="acessibilidade-painel" aria-labelledby="titulo-acessibilidade">
+                <h2 id="titulo-acessibilidade" class="acessibilidade-titulo">♿ PAINEL DE ACESSIBILIDADE MULTIMÍDIA</h2>
+
+                <!-- Player de áudio para audiodescrição -->
+                <div class="audio-player" role="region" aria-label="Player de audiodescrição visual">
+                    <h3 style="color: var(--cor-secundaria); margin-bottom: 1rem; font-family: var(--fonte-titulo);">
+                        🎧 Audiodescrição Visual
+                    </h3>
+                    <audio controls aria-label="Audiodescrição do portal SYS.IA Verifier">
+                        <source src="audiodescrição.mp3" type="audio/mpeg">
+                        Seu navegador não suporta o elemento de áudio.
+                    </audio>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        Áudio descritivo para deficientes visuais - descreve o conteúdo visual do portal
+                    </p>
+                </div>
+
+                <!-- Transcrição em texto para deficientes auditivos -->
+                <div class="transcricao">
+                    <details>
+                        <summary>
+                            📝 Transcrição em Texto (para deficientes auditivos)
+                        </summary>
+                        <div class="transcricao-conteudo">
+                            <p><strong>Transcrição da Audiodescrição do Portal SYS.IA_VERIFIER:</strong></p>
+                            
+                            <p>Bem-vindo ao SYS.IA_VERIFIER, um portal educacional dedicado à verificação de fatos sobre Inteligência Artificial. O site possui tema visual Matrix Cyber com fundo preto e elementos em verde neon.</p>
+                            
+                            <p>O portal está organizado em três seções principais:</p>
+                            
+                            <p>Primeira seção: Verificação de Fatos - Mitos versus Verdades sobre IA. Aqui desmistificamos crenças comuns como "IA tem consciência" ou "IA sempre está correta", apresentando explicações claras e baseadas em evidências.</p>
+                            
+                            <p>Segunda seção: Módulos Educacionais em Vídeo - quatro cursos disponíveis cobrindo Fundamentos de IA, Engenharia de Prompts, Ética e Verificação, e Machine Learning Básico. Cada curso possui thumbnail ilustrativa e link para o YouTube.</p>
+                            
+                            <p>Terceira seção: Diretório de IAs Globais - apresenta seis ferramentas de inteligência artificial gratuitas de diferentes países, incluindo ChatGPT, Gemini e Claude dos Estados Unidos, e DeepSeek, Qwen e Kimi da China.</p>
+                            
+                            <p>O portal também inclui terminais de comandos estilizados mostrando exemplos de prompts educativos para ensino básico, e um sistema de modo de leitura calma para usuários com TEA ou déficit de atenção.</p>
+                            
+                            <p>Todos os elementos são totalmente acessíveis via teclado, com indicadores de foco visíveis em amarelo e magenta de alto contraste.</p>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- RODAPÉ -->
+        <footer role="contentinfo" aria-label="Rodapé do portal">
+            <div class="footer-conteudo">
+                <p class="footer-texto">
+                    &lt;/&gt; SYS.IA_VERIFIER © 2024 | Portal Educacional de IA
+                </p>
+                <p class="footer-texto" style="font-size: 0.9rem;">
+                    Desenvolvido com HTML5 + CSS3 | Acessibilidade WCAG 2.1 AA | Tema Matrix Cyber
+                </p>
+                <div class="footer-links">
+                    <a href="#home" class="footer-link">Home</a>
+                    <a href="#cursos" class="footer-link">Cursos</a>
+                    <a href="#ias-globais" class="footer-link">IAs Globais</a>
+                    <a href="#acessibilidade" class="footer-link">Acessibilidade</a>
+                </div>
+            </div>
+        </footer>
+
     </div>
-</main>
+    <!-- Fim do container principal -->
 
-<script>
-    const screen = document.getElementById('terminal-screen');
-    const input = document.getElementById('cmd-input');
-    const modelSelect = document.getElementById('model-select');
-    const progressLine = document.getElementById('progress-line');
-    
-    // Configuração do Canvas redimensionável
-    const canvas = document.getElementById('retro-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-        ctx.fillStyle = '#0f0f11'; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#1f1f23'; 
-        ctx.font = '14px monospace';
-        ctx.fillText("[ENGINE_CANVAS_MONITOR: ONLINE E MAXIMIZADO]", 20, 30);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    setTimeout(resizeCanvas, 100);
-
-    const SYSTEM_PROMPT = "Você é o THIGAS A.I, um assistente de elite especialista em tecnologia e programação de jogos (HTML, CSS, JavaScript, Canvas, C# e C++). Suas respostas devem ser curtas, diretas, sem introduções e focadas apenas em códigos funcionais limpos.";
-    let generator = null;
-
-    function processarANSI(texto) {
-        let textoSeguro = texto.replace(/[&<>'"]/g, tag => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-        }[tag]));
-
-        const coresANSI = {
-            '30': 'color: #000000;', '31': 'color: #ff4e50;', '32': 'color: #00ff00;', 
-            '33': 'color: #f9d423;', '34': 'color: #4285f4;', '35': 'color: #9b51e0;', 
-            '36': 'color: #00ffff;'
-        };
-
-        return textoSeguro.replace(/\x1b\[(\d+)m/g, (match, numero) => {
-            if (numero === '0') return '</span>';
-            if (coresANSI[numero]) return `<span style="${coresANSI[numero]}">`;
-            return match;
-        });
-    }
-
-    async function switchModel(modelPath) {
-        input.disabled = true;
-        input.placeholder = "Alternando modelo... Baixando blocos para o celular.";
-        printLine(`[SISTEMA] Conectando ao repositório: ${modelPath}`, "system");
-        
-        try {
-            generator = await window.pipeline('text-generation', modelPath, {
-                progress_callback: (data) => {
-                    if (data.status === 'progress') {
-                        progressLine.innerText = `[DOWNLOAD] ${Math.round(data.progress)}% extraído para o cache do navegador.`;
-                    }
-                }
-            });
-
-            progressLine.innerText = `[SISTEMA] Concluído. Modelo ativo alocado na RAM do smartphone.`;
-            input.disabled = false;
-            input.placeholder = "Faça uma pergunta para o THIGAS A.I...";
-            printLine(`THIGAS A.I > Conectado diretamente e pronto com a memória do sistema ativa!`, "bot");
-        } catch (error) {
-            printLine("\x1b[31m[ERRO] Falha ao alocar memória RAM ou carregar modelo via WebAssembly.\x1b[0m", "system");
-            console.error(error);
-        }
-    }
-
-    window.addEventListener('load', () => {
-        setTimeout(() => { switchModel(modelSelect.value); }, 1000);
-    });
-
-    async function processCommand() {
-        const text = input.value.trim();
-        if (!text || !generator) return;
-
-        printLine(`user@root:~# ${text}`, 'user');
-        input.value = '';
-
-        if (text.toLowerCase() === 'clear') { 
-            screen.innerHTML = ''; 
-            screen.appendChild(document.getElementById('ascii-banner'));
-            return; 
-        }
-
-        printLine("\x1b[33m[SISTEMA] Computando tokens via placa de vídeo local...\x1b[0m", 'system');
-
-        const promptFormatado = `<|im_start|>system\n${SYSTEM_PROMPT}<|im_end|>\n<|im_start|>user\n${text}<|im_end|>\n<|im_start|>assistant\n`;
-
-        try {
-            const response = await generator(promptFormatado, {
-                max_new_tokens: 250,
-                temperature: 0.2,
-                top_p: 0.9,
-                do_sample: true
-            });
-
-            let botReply = response.generated_text.split('<|im_start|>assistant\n')[1] || response.generated_text;
-            botReply = botReply.replace('<|im_end|>', '').trim();
-
-            printLine(`THIGAS A.I > ${botReply}`, 'bot');
-
-            // Nota: O código de injeção no iframe foi totalmente removido desta área.
-
-        } catch (error) {
-            printLine("\x1b[31m[ERRO] Erro na geração dos tokens do modelo local.\x1b[0m", 'system');
-        }
-    }
-
-    function printLine(text, type) {
-        const line = document.createElement('div');
-        line.classList.add('line', type);
-        line.innerHTML = processarANSI(text);
-        screen.appendChild(line);
-        screen.scrollTop = screen.scrollHeight;
-    }
-
-    function sendMobileKey(key) {
-        printLine(`[D-PAD] Tecla acionada: ${key}`, 'system');
-        // Uma vez que o Sandbox foi desativado, preparemos os controlos
-        // para comunicarem internamente com o próprio Canvas no futuro.
-        console.log("Variável de jogo acionada pelo D-PAD:", key);
-    }
-    
-    input.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') processCommand();
-    });
-</script>
 </body>
 </html>
